@@ -27,3 +27,4 @@ let server = app.listen(3000, function () {
 
 app.post('/login', require('./router/postLogin'));
 app.post('/loginafter', require('./router/postLoginAfter'));
+app.post('/crtGrp', require('./router/createGroup'));

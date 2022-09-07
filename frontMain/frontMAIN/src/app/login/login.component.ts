@@ -31,13 +31,13 @@ export class LoginComponent implements OnInit {
 
       if (data.ok){
         alert("correct");
-        sessionStorage.setItem('userid', data.userid.toString());
-        sessionStorage.setItem('userlogin', data.ok.toString());
-        sessionStorage.setItem('username', data.username);
-        sessionStorage.setItem('useremail', data.useremail);
-        sessionStorage.setItem('userroll', data.userroll);
+        localStorage.setItem('userid', data.userid.toString());
+        localStorage.setItem('userlogin', data.ok.toString());
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('useremail', data.useremail);
+        localStorage.setItem('userrole', data.userrole);
 
-        this.router.navigateByUrl("/account");
+        this.router.navigateByUrl("/chat");
       }
       else { alert("email or password incorrect");}
 

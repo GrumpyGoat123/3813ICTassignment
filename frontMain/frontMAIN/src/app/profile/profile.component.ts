@@ -21,16 +21,18 @@ export class ProfileComponent implements OnInit {
   userid = 0;
   username = "";
   useremail = "";
-  userroll = "";
+  userrole = "";
+  groupname = "";
+
   constructor(private router: Router, private httpClient: HttpClient) {
-    if (!(sessionStorage.getItem('userlogin')=="true")){
+    if (!(localStorage.getItem('userlogin')=="true")){
       alert("login please");
       this.router.navigateByUrl("/login");
     }
-    this.username = sessionStorage.getItem('username')!;
-    this.useremail = sessionStorage.getItem('useremail')!;
-    this.userroll = sessionStorage.getItem('userroll')!;
-    this.userid = Number(sessionStorage.getItem('userid'));
+    this.username = localStorage.getItem('username')!;
+    this.useremail = localStorage.getItem('useremail')!;
+    this.userrole = localStorage.getItem('userrole')!;
+    this.userid = Number(localStorage.getItem('userid'));
   }
 
   ngOnInit(): void {
@@ -41,14 +43,14 @@ export class ProfileComponent implements OnInit {
       'userid': this.userid,
       'username': this.username,
       'useremail': this.useremail,
-      'userroll': this.userroll
+      'userrole': this.userrole
     }
 
 
-    sessionStorage.setItem('username', this.username);
-    sessionStorage.setItem('useremail', this.useremail);
-    sessionStorage.setItem('userroll', this.userroll);
-    sessionStorage.setItem('userid', this.userid.toString());
+    localStorage.setItem('username', this.username);
+    localStorage.setItem('useremail', this.useremail);
+    localStorage.setItem('userrole', this.userrole);
+    localStorage.setItem('userid', this.userid.toString());
 
     this.httpClient.post<Userobj[]>(BACKEND_URL + '/loginafter', userobj)
       .subscribe((m: any) => {alert(JSON.stringify(m));});
@@ -57,4 +59,38 @@ export class ProfileComponent implements OnInit {
 
   }
 
+  logoutFunc(){
+    localStorage.clear();
+    this.router.navigateByUrl("/");
+  }
+
+  crtGrpFunc(){
+    let userobj = {
+      'userid': this.userid,
+      'username': this.username,
+      'useremail': this.useremail,
+      'userrole': this.userrole,
+      'groupname': this.groupname
+    }
+    this.httpClient.post(BACKEND_URL + '/crtGrp', userobj)
+    .subscribe((data:any)=>{
+      alert("posting: " +JSON.stringify(this.userrole));
+
+      alert("postRes: " +JSON.stringify(data));
+
+      if (data.ok){
+        alert("correct");
+        localStorage.setItem('userid', data.userid.toString());
+        localStorage.setItem('userlogin', data.ok.toString());
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('useremail', data.useremail);
+        localStorage.setItem('userrole', data.userrole);
+
+        this.router.navigateByUrl("/chat");
+      }
+      else { alert("email or password incorrect");}
+
+
+    })
+  }
 }

@@ -7,8 +7,15 @@ Username:<br>
 Email: <br>
 <input type="email" [(ngModel)]="useremail"> <br>
 
-Roll: <br>
-<input type="string" [(ngModel)]="userroll">   <br>
+role: <br>
+<input type="string" [(ngModel)]="userrole">   <br>
+
+role: <br>
+<input type="string" [(ngModel)]="groupname">   <br>
 
 
 <button class="log_but" id="submit"(click)="editFunc()">Submit</button>
+
+<button class="log_but" id="submit"(click)="logoutFunc()">Logout</button>
+
+<button class="log_but" id="submit"(click)="crtGrpFunc()">Create Group</button>

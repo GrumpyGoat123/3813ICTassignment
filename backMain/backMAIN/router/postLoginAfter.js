@@ -5,7 +5,7 @@ module.exports = function(req, res) {
         "userid": req.body.userid,
         "username": req.body.username,
         "useremail": req.body.useremail,
-        "userroll": req.body.userroll
+        "userrole": req.body.userrole
     }
     let uArray = [];
     fs.readFile('./data/extendedUsers.json', 'utf8', function(err, data) {
@@ -14,7 +14,7 @@ module.exports = function(req, res) {
         uArray = JSON.parse(data);
         console.log(userobj);
         // make some change according to user's post 
-        let i = uArray.findIndex(x => x.username == userobj.username);
+        let i = uArray.findIndex(x => x.group == userobj.username);
         if (i == -1) {
             uArray.push(userobj);
         } else {
@@ -24,7 +24,7 @@ module.exports = function(req, res) {
         res.send(uArray);
         // save the file of user list
         let uArrayjson = JSON.stringify(uArray);
-        fs.writeFile('./data/extendedUsers.json', uArrayjson, 'utf-8', function(err) {
+        fs.writeFile('./data/groups.json', uArrayjson, 'utf-8', function(err) {
             if (err) throw err;
         });
     });

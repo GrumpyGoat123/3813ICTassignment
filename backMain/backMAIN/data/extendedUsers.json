@@ -1,1 +1,6 @@
-[{"userid":1,"username":"Turtle","useremail":"turtle@hotmail.com","userroll":"super"}]
+[
+    {"userid":1,"username":"Turtle","useremail":"turtle@hotmail.com","userrole":"super"}, 
+    {"userid":2,"username":"Rabbit","useremail":"rabbit@hotmail.com","userrole":"admin"}, 
+    {"userid":3,"username":"Bird","useremail":"bird@hotmail.com","userrole":"assis"}, 
+    {"userid":4,"username":"Dog","useremail":"dog@hotmail.com","userrole":"member"}
+]
