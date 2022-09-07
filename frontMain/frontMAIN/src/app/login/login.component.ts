@@ -23,7 +23,6 @@ export class LoginComponent implements OnInit {
   submit(){
 
     let user = {username:this.email, pwd: this.password};
-  //this.httpClient.post(BACKEND_URL + '/login', user,  httpOptions)
     this.httpClient.post(BACKEND_URL + '/login', user)
     .subscribe((data:any)=>{
       alert("posting: " +JSON.stringify(user));
@@ -35,8 +34,8 @@ export class LoginComponent implements OnInit {
         sessionStorage.setItem('userid', data.userid.toString());
         sessionStorage.setItem('userlogin', data.ok.toString());
         sessionStorage.setItem('username', data.username);
-        sessionStorage.setItem('userbirthdate', data.userbirthdate);
-        sessionStorage.setItem('userage', data.userage.toString());
+        sessionStorage.setItem('useremail', data.useremail);
+        sessionStorage.setItem('userroll', data.userroll);
 
         this.router.navigateByUrl("/account");
       }

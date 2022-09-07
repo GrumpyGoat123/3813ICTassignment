@@ -3,8 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json'})
 };
-// const BACKEND_URL = 'http://localhost:3000';
-const BACKEND_URL = 'https://s2179956.elf.ict.griffith.edu.au:3001';
+const BACKEND_URL = 'http://localhost:3000';
 
 // for angular http methods
 import { NgForm } from '@angular/forms';
@@ -21,16 +20,16 @@ import { Userobj } from '../userobj';
 export class ProfileComponent implements OnInit {
   userid = 0;
   username = "";
-  userbirthdate = "";
-  userage = 0;
-  constructor(private router: Router, private httpClient: HttpClient) { 
+  useremail = "";
+  userroll = "";
+  constructor(private router: Router, private httpClient: HttpClient) {
     if (!(sessionStorage.getItem('userlogin')=="true")){
       alert("login please");
       this.router.navigateByUrl("/login");
     }
     this.username = sessionStorage.getItem('username')!;
-    this.userbirthdate = sessionStorage.getItem('userbirthdate')!;
-    this.userage = Number(sessionStorage.getItem('userage'));
+    this.useremail = sessionStorage.getItem('useremail')!;
+    this.userroll = sessionStorage.getItem('userroll')!;
     this.userid = Number(sessionStorage.getItem('userid'));
   }
 
@@ -40,18 +39,18 @@ export class ProfileComponent implements OnInit {
   editFunc(){
     let userobj = {
       'userid': this.userid,
-      'username': this.username, 
-      'userbirthdate': this.userbirthdate, 
-      'userage': this.userage
+      'username': this.username,
+      'useremail': this.useremail,
+      'userroll': this.userroll
     }
 
-    
-    sessionStorage.setItem('username', this.username);
-    sessionStorage.setItem('userbirthdate', this.userbirthdate);
-    sessionStorage.setItem('userage', this.userage.toString());
-    sessionStorage.setItem('userid', this.userage.toString());
 
-    this.httpClient.post<Userobj[]>(BACKEND_URL + '/loginafter', userobj,  httpOptions)
+    sessionStorage.setItem('username', this.username);
+    sessionStorage.setItem('useremail', this.useremail);
+    sessionStorage.setItem('userroll', this.userroll);
+    sessionStorage.setItem('userid', this.userid.toString());
+
+    this.httpClient.post<Userobj[]>(BACKEND_URL + '/loginafter', userobj)
       .subscribe((m: any) => {alert(JSON.stringify(m));});
 
 
