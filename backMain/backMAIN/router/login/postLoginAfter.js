@@ -14,7 +14,7 @@ module.exports = function(req, res) {
         uArray = JSON.parse(data);
         console.log(userobj);
         // make some change according to user's post 
-        let i = uArray.findIndex(x => x.group == userobj.username);
+        let i = uArray.findIndex(x => x.username == userobj.username);
         if (i == -1) {
             uArray.push(userobj);
         } else {

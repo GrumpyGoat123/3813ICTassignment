@@ -78,19 +78,46 @@ export class ProfileComponent implements OnInit {
 
       alert("postRes: " +JSON.stringify(data));
 
-      if (data.ok){
-        alert("correct");
-        localStorage.setItem('userid', data.userid.toString());
-        localStorage.setItem('userlogin', data.ok.toString());
-        localStorage.setItem('username', data.username);
-        localStorage.setItem('useremail', data.useremail);
-        localStorage.setItem('userrole', data.userrole);
-
-        this.router.navigateByUrl("/chat");
+      if (data == 1){
+        alert("Already a group with that name");
       }
-      else { alert("email or password incorrect");}
+      else if(data == 2){
+        alert("unauthorized Access");
+      }
+      else {
+        alert("Added to group");
+      }
 
 
     })
   }
+
+  dltGrpFunc(){
+    let userobj = {
+      'userid': this.userid,
+      'username': this.username,
+      'useremail': this.useremail,
+      'userrole': this.userrole,
+      'groupname': this.groupname
+    }
+    this.httpClient.post(BACKEND_URL + '/dltGrp', userobj)
+    .subscribe((data:any)=>{
+      alert("posting: " +JSON.stringify(this.userrole));
+
+      alert("postRes: " +JSON.stringify(data));
+
+      if (data == 1){
+          alert("Couldnt find the group");
+      }else if(data == 2){
+        alert("unauthorized Access");
+      }
+      else {
+        alert("Deleted Group");
+      }
+
+
+    })
+  }
+
 }
+
