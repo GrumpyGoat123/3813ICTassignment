@@ -136,4 +136,4 @@ This page is used for the user to login into the app. It asks for a username and
 This is the main space of the program. This is where the users can chat with each other (implementation in phase 2) and most of the functionality of the app is at. This page will allow the user to create groups and rooms and join groups and rooms.
 
 ### Profile: 
-This is the final page and is used for editing your profile information. This page can be used to change your own profile and/or edit other users profile information and creating new users. This page is mainly used for super admins and group admins.
+This is the final page and is used for editing your profile information. This page can be used to change your own profile and/or edit other users profile information and creating new users. This page is mainly used for super admins and group admins. Users can also logout from this page.
