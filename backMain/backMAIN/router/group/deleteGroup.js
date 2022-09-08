@@ -2,7 +2,6 @@ var fs = require('fs');
 
 module.exports = function(req, res) {
     let userobj =  req.body.groupname;
-    let rolePass = req.body.userrole;
     let status = [];
 
     console.log(req.body.groupname);

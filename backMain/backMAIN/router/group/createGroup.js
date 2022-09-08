@@ -2,7 +2,6 @@ var fs = require('fs');
 
 module.exports = function(req, res) {
     let userobj =  req.body.groupname;
-    let rolePass = req.body.userrole;
     console.log(req.body.groupname);
     let status = [];
     
@@ -20,7 +19,7 @@ module.exports = function(req, res) {
                     "roomsTtl": 0,
                     "usersTtl": 0,
                     "users": [],
-                    "rooms":{}
+                    "rooms":[]
                 })
                 console.log(uArray);
                 // send response to user

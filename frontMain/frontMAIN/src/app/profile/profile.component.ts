@@ -23,6 +23,7 @@ export class ProfileComponent implements OnInit {
   useremail = "";
   userrole = "";
   groupname = "";
+  roomname = "";
 
   //Set local storage with user
   constructor(private router: Router, private httpClient: HttpClient) {
@@ -146,5 +147,36 @@ export class ProfileComponent implements OnInit {
 
   }
 
+
+  crtRoomFunc(){
+    let roomObj = {
+      'roomName': this.roomname,
+      'group': this.groupname
+    }
+
+    if(this.userrole == "super" || this.userrole == "admin"){
+      this.httpClient.post(BACKEND_URL + '/crtRoom', roomObj)
+      .subscribe((data:any)=>{
+        alert("posting: " +JSON.stringify(this.userrole));
+
+        alert("postRes: " +JSON.stringify(data));
+
+        if (data == 1){
+          alert("Already a room with that name");
+        }else if(data == 2){
+          alert("No group with that name");
+        }
+
+        else {
+          alert("Added room to group");
+        }
+
+
+      })
+    }else{
+      alert("unauthorized Access");
+    }
+  }
 }
+
 

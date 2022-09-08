@@ -4,11 +4,12 @@
         "roomsTtl": 2,
         "usersTtl": 2,
         "users": ["Turtle", "Bird"],
-        "rooms":{
-            "room1": {
-                "usersTtl": 2,
-                "users": ["Turtle", "Bird"]
-            }
-        }
+        "rooms": 
+            [
+                {
+                    "room" : "room1",
+                    "users": ["Turtle", "Bird"]
+                }
+            ]
     }
 ]
