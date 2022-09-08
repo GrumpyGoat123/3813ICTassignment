@@ -209,6 +209,39 @@ export class ProfileComponent implements OnInit {
       alert("unauthorized Access");
     }
   }
+
+
+  //Add user to group
+  addUserGroup(){
+    let groupObj = {
+      'group': this.groupname,
+      'username': this.username,
+    }
+
+    if(this.userrole == "super" || this.userrole == "admin"){
+      this.httpClient.post(BACKEND_URL + '/addUserGroup', groupObj)
+      .subscribe((data:any)=>{
+        alert("posting: " +JSON.stringify(this.userrole));
+
+        alert("postRes: " +JSON.stringify(data));
+
+        if (data == 1){
+          alert("Group does not exist");
+        }else if(data == 2){
+          alert("User already exists in group");
+        }else if(data == 3){
+          alert("User does not exist");
+        }
+        else {
+          alert("User added to group");
+        }
+
+
+      })
+    }else{
+      alert("unauthorized Access");
+    }
+  }
 }
 
 
