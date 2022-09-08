@@ -212,7 +212,7 @@ export class ProfileComponent implements OnInit {
 
 
   //Add user to group
-  addUserGroup(){
+  addUserGroupFunc(){
     let groupObj = {
       'group': this.groupname,
       'username': this.username,
@@ -234,6 +234,42 @@ export class ProfileComponent implements OnInit {
         }
         else {
           alert("User added to group");
+        }
+
+
+      })
+    }else{
+      alert("unauthorized Access");
+    }
+  }
+
+  //Add user to room
+  addUserRoomFunc(){
+    let groupObj = {
+      'group': this.groupname,
+      'roomname': this.roomname,
+      'username': this.username
+    }
+    if(this.userrole == "super" || this.userrole == "admin"){
+      this.httpClient.post(BACKEND_URL + '/addUserRoom', groupObj)
+      .subscribe((data:any)=>{
+        alert("posting: " +JSON.stringify(this.userrole));
+
+        alert("postRes: " +JSON.stringify(data));
+
+        if (data == 1){
+          alert("Group does not exist");
+        }else if(data == 2){
+          alert("Room does not exist");
+        }else if(data == 3){
+          alert("User does not exist");
+        }else if(data == 4){
+          alert("User already exists in room");
+        }else if(data == 5){
+          alert("User is not in this group");
+        }
+        else {
+          alert("User added to room");
         }
 
 
