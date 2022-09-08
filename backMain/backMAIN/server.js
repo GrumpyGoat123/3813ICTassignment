@@ -26,7 +26,6 @@ let server = app.listen(3000, function () {
 });
 
 app.post('/login', require('./router/login/postLogin'));
-app.post('/loginafter', require('./router/login/postLoginAfter'));
 app.post('/crtGrp', require('./router/group/createGroup'));
 app.post('/dltGrp', require('./router/group/deleteGroup'));
 app.post('/crtUser', require('./router/user/createUser'));

@@ -5,8 +5,8 @@ module.exports = function(req, res) {
     let rolePass = req.body.userrole;
     console.log(req.body.groupname);
     let status = [];
-    if(rolePass == "super" || rolePass == "admin"){
-        let uArray = [];
+    
+    let uArray = [];
         
         fs.readFile('./data/groups.json', 'utf8', function(err, data) {
             //open the file of groups list
@@ -37,13 +37,5 @@ module.exports = function(req, res) {
                     
             }
             
-        });
-    }else {
-        console.log("unauthorized Access");
-        status.push(2);
-        res.send(status);
-            
-    }
-
-    
+        });    
 }

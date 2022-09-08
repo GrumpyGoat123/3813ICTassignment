@@ -6,9 +6,8 @@ module.exports = function(req, res) {
     let status = [];
 
     console.log(req.body.groupname);
-
-    if(rolePass == "super" || rolePass == "admin"){
-        let uArray = [];
+    
+    let uArray = [];
         fs.readFile('./data/groups.json', 'utf8', function(err, data) {
             //open the file of groups list
             if (err) throw err;
@@ -21,11 +20,7 @@ module.exports = function(req, res) {
                 res.send(status);
             
             } else {
-                delete uArray[i].group;
-                delete uArray[i].roomsTtl;
-                delete uArray[i].usersTtl;
-                delete uArray[i].users;
-                delete uArray[i].rooms;
+                uArray[i] = {};
 
                 console.log(uArray);
                 // send response to user
@@ -41,11 +36,7 @@ module.exports = function(req, res) {
             }
             
         });
-    }else {
-        console.log("Unauthorized Access");
-        status.push(2);
-        res.send(status);
-    }
+    
 
     
 }

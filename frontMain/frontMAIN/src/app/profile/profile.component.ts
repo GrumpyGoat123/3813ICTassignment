@@ -24,6 +24,7 @@ export class ProfileComponent implements OnInit {
   userrole = "";
   groupname = "";
 
+  //Set local storage with user
   constructor(private router: Router, private httpClient: HttpClient) {
     if (!(localStorage.getItem('userlogin')=="true")){
       alert("login please");
@@ -38,32 +39,46 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  editFunc(){
+  //Create a user
+  crtUserFunc(){
     let userobj = {
       'userid': this.userid,
       'username': this.username,
       'useremail': this.useremail,
       'userrole': this.userrole
     }
+    let curUser = localStorage.getItem('username');
 
 
-    localStorage.setItem('username', this.username);
-    localStorage.setItem('useremail', this.useremail);
-    localStorage.setItem('userrole', this.userrole);
-    localStorage.setItem('userid', this.userid.toString());
+    if(this.userrole == "super"){
+      if(curUser == this.username){
+        localStorage.setItem('username', this.username);
+        localStorage.setItem('useremail', this.useremail);
+        localStorage.setItem('userrole', this.userrole);
+        localStorage.setItem('userid', this.userid.toString());
+        alert("Updated current user")
+      }
 
-    this.httpClient.post<Userobj[]>(BACKEND_URL + '/loginafter', userobj)
-      .subscribe((m: any) => {alert(JSON.stringify(m));});
+
+      this.httpClient.post<Userobj[]>(BACKEND_URL + '/crtUser', userobj)
+        .subscribe((m: any) => {alert(JSON.stringify(m));});
+    }else{
+      alert("Unauthorized Access");
+    }
+
+
 
 
 
   }
 
+  //Logout User
   logoutFunc(){
     localStorage.clear();
     this.router.navigateByUrl("/");
   }
 
+  //Create a group
   crtGrpFunc(){
     let userobj = {
       'userid': this.userid,
@@ -72,26 +87,30 @@ export class ProfileComponent implements OnInit {
       'userrole': this.userrole,
       'groupname': this.groupname
     }
-    this.httpClient.post(BACKEND_URL + '/crtGrp', userobj)
-    .subscribe((data:any)=>{
-      alert("posting: " +JSON.stringify(this.userrole));
+    if(this.userrole == "super" || this.userrole == "admin"){
+      this.httpClient.post(BACKEND_URL + '/crtGrp', userobj)
+      .subscribe((data:any)=>{
+        alert("posting: " +JSON.stringify(this.userrole));
 
-      alert("postRes: " +JSON.stringify(data));
+        alert("postRes: " +JSON.stringify(data));
 
-      if (data == 1){
-        alert("Already a group with that name");
-      }
-      else if(data == 2){
-        alert("unauthorized Access");
-      }
-      else {
-        alert("Added to group");
-      }
+        if (data == 1){
+          alert("Already a group with that name");
+        }
+
+        else {
+          alert("Added to group");
+        }
 
 
-    })
+      })
+    }else{
+      alert("unauthorized Access");
+    }
+
   }
 
+  //Delete a group
   dltGrpFunc(){
     let userobj = {
       'userid': this.userid,
@@ -100,23 +119,24 @@ export class ProfileComponent implements OnInit {
       'userrole': this.userrole,
       'groupname': this.groupname
     }
-    this.httpClient.post(BACKEND_URL + '/dltGrp', userobj)
-    .subscribe((data:any)=>{
-      alert("posting: " +JSON.stringify(this.userrole));
+    if(this.userrole == "super" || this.userrole == "admin"){
+      this.httpClient.post(BACKEND_URL + '/dltGrp', userobj)
+      .subscribe((data:any)=>{
+        alert("posting: " +JSON.stringify(this.userrole));
 
-      alert("postRes: " +JSON.stringify(data));
+        alert("postRes: " +JSON.stringify(data));
 
-      if (data == 1){
-          alert("Couldnt find the group");
-      }else if(data == 2){
-        alert("unauthorized Access");
-      }
-      else {
-        alert("Deleted Group");
-      }
+        if (data == 1){
+            alert("Couldnt find the group");
+        }
+        else {
+          alert("Deleted Group");
+        }
+      })
+    }else {
+      alert("unauthorized Access");
+    }
 
-
-    })
   }
 
 }
