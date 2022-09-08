@@ -1,6 +1,6 @@
 # 3813ICT Assignment: 1
 #GIT Link:
-###https://github.com/GrumpyGoat123/3813ICTassignment.git
+### https://github.com/GrumpyGoat123/3813ICTassignment.git
 ## Git 
 The layout of the git repository simply contains the project folder and a README file. Default branch is main. During the development process, commits where done frequently usually after every stable milestone was achieved so that the application could run without any errors with every commit. Examples of a ‘stable milestone’ include things like new features to the application, a new completed route, improved design of a section/page and any major bug fixes/improvements that i potentially made previously.
 
