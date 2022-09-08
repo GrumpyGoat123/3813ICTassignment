@@ -30,3 +30,4 @@ app.post('/crtGrp', require('./router/group/createGroup'));
 app.post('/dltGrp', require('./router/group/deleteGroup'));
 app.post('/crtUser', require('./router/user/createUser'));
 app.post('/crtRoom', require('./router/room/createRoom'));
+app.post('/dltRoom', require('./router/room/deleteRoom'));

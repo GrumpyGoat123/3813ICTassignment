@@ -148,6 +148,7 @@ export class ProfileComponent implements OnInit {
   }
 
 
+  //Create a room
   crtRoomFunc(){
     let roomObj = {
       'roomName': this.roomname,
@@ -169,6 +170,37 @@ export class ProfileComponent implements OnInit {
 
         else {
           alert("Added room to group");
+        }
+
+
+      })
+    }else{
+      alert("unauthorized Access");
+    }
+  }
+
+  //Delete a room
+  dltRoomFunc(){
+    let roomObj = {
+      'roomName': this.roomname,
+      'group': this.groupname
+    }
+
+    if(this.userrole == "super" || this.userrole == "admin"){
+      this.httpClient.post(BACKEND_URL + '/dltRoom', roomObj)
+      .subscribe((data:any)=>{
+        alert("posting: " +JSON.stringify(this.userrole));
+
+        alert("postRes: " +JSON.stringify(data));
+
+        if (data == 1){
+          alert("No room with that name");
+        }else if(data == 2){
+          alert("No group with that name");
+        }
+
+        else {
+          alert("Deleted Room");
         }
 
 
