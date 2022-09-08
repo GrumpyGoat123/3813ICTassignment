@@ -16,8 +16,6 @@ module.exports = function(req, res) {
             if (i == -1) {
                 uArray.push({
                     "group": req.body.groupname,
-                    "roomsTtl": 0,
-                    "usersTtl": 0,
                     "users": [],
                     "rooms":[]
                 })

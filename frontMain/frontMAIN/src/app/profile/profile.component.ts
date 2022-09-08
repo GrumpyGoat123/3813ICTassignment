@@ -98,16 +98,13 @@ export class ProfileComponent implements OnInit {
     if(this.userrole == "super" || this.userrole == "admin"){
       this.httpClient.post(BACKEND_URL + '/crtGrp', userobj)
       .subscribe((data:any)=>{
-        alert("posting: " +JSON.stringify(this.userrole));
-
-        alert("postRes: " +JSON.stringify(data));
 
         if (data == 1){
           alert("Already a group with that name");
         }
 
         else {
-          alert("Added to group");
+          alert("Created new group");
         }
 
 
@@ -130,9 +127,6 @@ export class ProfileComponent implements OnInit {
     if(this.userrole == "super" || this.userrole == "admin"){
       this.httpClient.post(BACKEND_URL + '/dltGrp', userobj)
       .subscribe((data:any)=>{
-        alert("posting: " +JSON.stringify(this.userrole));
-
-        alert("postRes: " +JSON.stringify(data));
 
         if (data == 1){
             alert("Couldnt find the group");
@@ -158,9 +152,6 @@ export class ProfileComponent implements OnInit {
     if(this.userrole == "super" || this.userrole == "admin"){
       this.httpClient.post(BACKEND_URL + '/crtRoom', roomObj)
       .subscribe((data:any)=>{
-        alert("posting: " +JSON.stringify(this.userrole));
-
-        alert("postRes: " +JSON.stringify(data));
 
         if (data == 1){
           alert("Already a room with that name");
@@ -189,9 +180,6 @@ export class ProfileComponent implements OnInit {
     if(this.userrole == "super" || this.userrole == "admin"){
       this.httpClient.post(BACKEND_URL + '/dltRoom', roomObj)
       .subscribe((data:any)=>{
-        alert("posting: " +JSON.stringify(this.userrole));
-
-        alert("postRes: " +JSON.stringify(data));
 
         if (data == 1){
           alert("No room with that name");
@@ -221,9 +209,6 @@ export class ProfileComponent implements OnInit {
     if(this.userrole == "super" || this.userrole == "admin"){
       this.httpClient.post(BACKEND_URL + '/addUserGroup', groupObj)
       .subscribe((data:any)=>{
-        alert("posting: " +JSON.stringify(this.userrole));
-
-        alert("postRes: " +JSON.stringify(data));
 
         if (data == 1){
           alert("Group does not exist");
@@ -253,9 +238,6 @@ export class ProfileComponent implements OnInit {
     if(this.userrole == "super" || this.userrole == "admin"){
       this.httpClient.post(BACKEND_URL + '/addUserRoom', groupObj)
       .subscribe((data:any)=>{
-        alert("posting: " +JSON.stringify(this.userrole));
-
-        alert("postRes: " +JSON.stringify(data));
 
         if (data == 1){
           alert("Group does not exist");
@@ -270,6 +252,39 @@ export class ProfileComponent implements OnInit {
         }
         else {
           alert("User added to room");
+        }
+
+
+      })
+    }else{
+      alert("unauthorized Access");
+    }
+  }
+
+  //Delete user from room
+  dltUserRoomFunc(){
+    let groupObj = {
+      'group': this.groupname,
+      'roomname': this.roomname,
+      'username': this.username
+    }
+    if(this.userrole == "super" || this.userrole == "admin"){
+      this.httpClient.post(BACKEND_URL + '/dltUserRoom', groupObj)
+      .subscribe((data:any)=>{
+
+        if (data == 1){
+          alert("Group does not exist");
+        }else if(data == 2){
+          alert("Room does not exist");
+        }else if(data == 3){
+          alert("User does not exist");
+        }else if(data == 4){
+          alert("User does not exist in this room");
+        }else if(data == 5){
+          alert("User is not in this group");
+        }
+        else {
+          alert("User removed from room");
         }
 
 

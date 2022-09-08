@@ -25,11 +25,19 @@ let server = app.listen(3000, function () {
     console.log("Server listening on: " + host + "port: " + port);
 });
 
+//Login 
 app.post('/login', require('./router/login/postLogin'));
+
+//Groups
 app.post('/crtGrp', require('./router/group/createGroup'));
 app.post('/dltGrp', require('./router/group/deleteGroup'));
-app.post('/crtUser', require('./router/user/createUser'));
+
+//Rooms
 app.post('/crtRoom', require('./router/room/createRoom'));
 app.post('/dltRoom', require('./router/room/deleteRoom'));
+
+//Users
 app.post('/addUserGroup', require('./router/user/addUserGroup'));
 app.post('/addUserRoom', require('./router/user/addUserRoom'));
+app.post('/dltUserRoom', require('./router/user/dltUserRoom'));
+app.post('/crtUser', require('./router/user/createUser'));
