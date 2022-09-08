@@ -38,6 +38,8 @@ app.post('/dltRoom', require('./router/room/deleteRoom'));
 
 //Users
 app.post('/addUserGroup', require('./router/user/addUserGroup'));
+app.post('/dltUserGroup', require('./router/user/dltUserGroup'));
 app.post('/addUserRoom', require('./router/user/addUserRoom'));
 app.post('/dltUserRoom', require('./router/user/dltUserRoom'));
 app.post('/crtUser', require('./router/user/createUser'));
+

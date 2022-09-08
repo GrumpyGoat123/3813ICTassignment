@@ -25,9 +25,6 @@ export class LoginComponent implements OnInit {
     let user = {username:this.email, pwd: this.password};
     this.httpClient.post(BACKEND_URL + '/login', user)
     .subscribe((data:any)=>{
-      alert("posting: " +JSON.stringify(user));
-
-      alert("postRes: " +JSON.stringify(data));
 
       if (data.ok){
         alert("correct");

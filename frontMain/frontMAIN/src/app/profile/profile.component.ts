@@ -49,30 +49,52 @@ export class ProfileComponent implements OnInit {
       'userrole': this.userrole
     }
     let curUser = localStorage.getItem('username');
+    let curUserRole = localStorage.getItem('userrole');
 
-
-    if(this.userrole == "super"){
-      if(curUser == this.username){
-        localStorage.setItem('username', this.username);
-        localStorage.setItem('useremail', this.useremail);
-        localStorage.setItem('userrole', this.userrole);
-        localStorage.setItem('userid', this.userid.toString());
-        alert("Updated current user")
-      }
-
+    if(curUserRole == "super"){
 
       this.httpClient.post<Userobj[]>(BACKEND_URL + '/crtUser', userobj)
         .subscribe((m: any) => {
           if(m == 1){
             alert("Email already exists");
           }else{
+            if(curUser == this.username){
+              localStorage.setItem('username', this.username);
+              localStorage.setItem('useremail', this.useremail);
+              localStorage.setItem('userrole', this.userrole);
+              localStorage.setItem('userid', this.userid.toString());
+              alert("Updated current user")
+            }
             alert(JSON.stringify(m));
           }
         });
 
+    }else if(curUserRole == "admin"){
+      if(this.userrole == "admin" || this.userrole == "super"){
+        alert("Cannot give user super/admin role")
+      }else{
+        this.httpClient.post<Userobj[]>(BACKEND_URL + '/crtUser', userobj)
+        .subscribe((m: any) => {
+          if(m == 1){
+            alert("Email already exists");
+          }else{
+            if(curUser == this.username){
+              localStorage.setItem('username', this.username);
+              localStorage.setItem('useremail', this.useremail);
+              localStorage.setItem('userrole', this.userrole);
+              localStorage.setItem('userid', this.userid.toString());
+              alert("Updated current user")
+            }
+            alert(JSON.stringify(m));
+          }
+        });
+      }
+
+
     }else{
       alert("Unauthorized Access");
     }
+
 
 
 
@@ -149,7 +171,7 @@ export class ProfileComponent implements OnInit {
       'group': this.groupname
     }
 
-    if(this.userrole == "super" || this.userrole == "admin"){
+    if(this.userrole == "super" || this.userrole == "admin" || this.userrole == "assis"){
       this.httpClient.post(BACKEND_URL + '/crtRoom', roomObj)
       .subscribe((data:any)=>{
 
@@ -228,6 +250,35 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  //Delete user from group
+  dltUserGroupFunc(){
+    let groupObj = {
+      'group': this.groupname,
+      'username': this.username,
+    }
+
+    if(this.userrole == "super" || this.userrole == "admin"){
+      this.httpClient.post(BACKEND_URL + '/dltUserGroup', groupObj)
+      .subscribe((data:any)=>{
+
+        if (data == 1){
+          alert("Group does not exist");
+        }else if(data == 2){
+          alert("User does not exist in group");
+        }else if(data == 3){
+          alert("User does not exist");
+        }
+        else {
+          alert("User deleted from group");
+        }
+
+
+      })
+    }else{
+      alert("unauthorized Access");
+    }
+  }
+
   //Add user to room
   addUserRoomFunc(){
     let groupObj = {
@@ -235,7 +286,7 @@ export class ProfileComponent implements OnInit {
       'roomname': this.roomname,
       'username': this.username
     }
-    if(this.userrole == "super" || this.userrole == "admin"){
+    if(this.userrole == "super" || this.userrole == "admin" || this.userrole == "assis"){
       this.httpClient.post(BACKEND_URL + '/addUserRoom', groupObj)
       .subscribe((data:any)=>{
 
@@ -268,7 +319,7 @@ export class ProfileComponent implements OnInit {
       'roomname': this.roomname,
       'username': this.username
     }
-    if(this.userrole == "super" || this.userrole == "admin"){
+    if(this.userrole == "super" || this.userrole == "admin" || this.userrole == "assis"){
       this.httpClient.post(BACKEND_URL + '/dltUserRoom', groupObj)
       .subscribe((data:any)=>{
 

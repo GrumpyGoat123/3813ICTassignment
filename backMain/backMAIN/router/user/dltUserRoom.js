@@ -52,7 +52,7 @@ module.exports = function(req, res) {
                                 res.send(status);
                             }else{
                                 console.log("Delete user from room");
-                                uArray[i].rooms[fRoom].users[fRoomUser] = {};
+                                uArray[i].rooms[fRoom].users.splice(fRoomUser, 1);
                                 console.log(uArray);
 
                                 res.send(uArray);
