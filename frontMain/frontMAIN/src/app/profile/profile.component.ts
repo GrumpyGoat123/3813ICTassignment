@@ -61,7 +61,14 @@ export class ProfileComponent implements OnInit {
 
 
       this.httpClient.post<Userobj[]>(BACKEND_URL + '/crtUser', userobj)
-        .subscribe((m: any) => {alert(JSON.stringify(m));});
+        .subscribe((m: any) => {
+          if(m == 1){
+            alert("Email already exists");
+          }else{
+            alert(JSON.stringify(m));
+          }
+        });
+
     }else{
       alert("Unauthorized Access");
     }
