@@ -1,1 +1,13 @@
-[{"group":"Buddy","users":["Turtle","Bird"],"rooms":[{"room":"room1","users":["Turtle","Bird"]}]},{"group":"dad","users":[],"rooms":[]},{"group":"dawdad","users":[],"rooms":[]}]
+[
+    {
+        "group": "Buddy",
+        "users": ["Turtle", "Bird"],
+        "rooms": 
+            [
+                {
+                    "room" : "room1",
+                    "users": ["Turtle", "Bird"]
+                }
+            ]
+    }
+]
