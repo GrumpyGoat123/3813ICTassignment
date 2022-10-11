@@ -1,6 +1,8 @@
 import * as $ from 'jquery';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { SocketService } from '../services/socket.service';
+import { FormsModule } from '@angular/forms';
 
 const BACKEND_URL = 'http://localhost:3000';
 
@@ -25,7 +27,7 @@ export class ChatComponent implements OnInit {
 
 
   grouplist = [];
-  constructor(private router: Router, private httpClient: HttpClient) {
+  constructor(private router: Router, private httpClient: HttpClient, private socketService:SocketService) {
     if (!(localStorage.getItem('userlogin')=="true")){
       alert("login please");
       this.router.navigateByUrl("/login");
@@ -37,10 +39,19 @@ export class ChatComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    $('#action_menu_btn').click(function(){
-      $('.action_menu').toggle();
-  });
+      $('#action_menu_btn').click(function(){
+        $('.action_menu').toggle();
+    });
+
+    this.initIoConnection();
   }
+
+  //
+  //
+  //ROUTES FOR CHAT COMPONENT
+  //
+  //
+
 
   //Create a group
   crtGrpFunc(){
@@ -278,5 +289,37 @@ export class ChatComponent implements OnInit {
     }else{
       alert("unauthorized Access");
     }
+  }
+
+
+  //
+  //
+  //CHAT MESSAGING COMPONENT
+  //
+  //
+
+  //messages
+  messagecontent:string="";
+  messages:string[] = [];
+  ioConnection:any;
+
+  initIoConnection(){
+    this.socketService.initSocket();
+    this.ioConnection = this.socketService.getMessage()
+      .subscribe((message:any) => {
+        //Add new message to message array
+        this.messages.push(message);
+      });
+  }
+
+  chat(){
+    if(this.messagecontent){
+      //Check for message to send
+      this.socketService.send(this.messagecontent);
+      this.messagecontent = "";
+    }else{
+      console.log("No message");
+    }
+
   }
 }

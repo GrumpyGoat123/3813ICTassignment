@@ -1,8 +1,17 @@
 var express = require('express');
 var app = express();
 
-
+//Cors
 var cors = require('cors')
+const http = require('http').Server(app);
+//SOCKET 
+const io = require('socket.io')(http,{
+    cors: {
+        origin: "http://localhost:4200",
+        methods: ["GET", "POST"],
+    }
+});
+
 app.use(cors());
 
 /*
@@ -17,14 +26,17 @@ app.use(function(req, res, next) {
 app.use(express.json());
 
 app.use(express.static(__dirname+'/../dist/app'));
+const sockets = require('./socket');
+const server = require('./listen');
+//LISTEN SERVER
 
-let server = app.listen(3000, function () {
-    let host = server.address().address;
-    let port = server.address().port;
-    console.log("My First Nodejs Server!");
-    console.log("Server listening on: " + host + "port: " + port);
-});
 
+const PORT = 3000;
+
+sockets.connect(io, PORT);
+
+server.listen(http, PORT);
+//POST METHODS
 //Login 
 app.post('/login', require('./router/login/postLogin'));
 
