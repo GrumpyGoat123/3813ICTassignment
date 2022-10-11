@@ -294,7 +294,7 @@ export class ChatComponent implements OnInit {
 
   //
   //
-  //CHAT MESSAGING COMPONENT
+  //CHAT MESSAGING
   //
   //
 
