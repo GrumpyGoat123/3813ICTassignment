@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { MongoDataService } from '../services/mongo-data.service';
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json'})
 };
@@ -26,7 +27,7 @@ export class ProfileComponent implements OnInit {
   roomname = "";
 
   //Set local storage with user
-  constructor(private router: Router, private httpClient: HttpClient) {
+  constructor(private router: Router, private httpClient: HttpClient, private mongoData:MongoDataService) {
     if (!(localStorage.getItem('userlogin')=="true")){
       alert("login please");
       this.router.navigateByUrl("/login");
@@ -53,9 +54,9 @@ export class ProfileComponent implements OnInit {
 
     if(curUserRole == "super"){
 
-      this.httpClient.post<Userobj[]>(BACKEND_URL + '/crtUser', userobj)
+      this.mongoData.add(userobj)
         .subscribe((m: any) => {
-          if(m == 1){
+          if(m.error != null){
             alert("Email already exists");
           }else{
             if(curUser == this.username){

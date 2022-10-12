@@ -1,6 +1,6 @@
 export interface Userobj {
     userid: number;
     username: string;
-    userbirthdate: string;
+    useremail: string;
     userrole: string;
 }
