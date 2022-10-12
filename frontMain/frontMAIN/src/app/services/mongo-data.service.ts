@@ -9,6 +9,6 @@ export class MongoDataService {
 
   constructor(private http:HttpClient) { }
   add(userobj:Userobj){
-    return this.http.post<any>('http://localhost:3000/add', userobj);
+    return this.http.post<any>('http://localhost:3000/crtUser', userobj);
   }
 }

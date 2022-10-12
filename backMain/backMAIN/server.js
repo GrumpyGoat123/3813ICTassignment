@@ -18,7 +18,7 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         // Database Name
         const db = client.db(dbName);
   
-        require('./router/mongo/add')(db, app);
+        require('./router/user/createUser')(db, app);
         
 });
 
@@ -75,5 +75,5 @@ app.post('/addUserGroup', require('./router/user/addUserGroup'));
 app.post('/dltUserGroup', require('./router/user/dltUserGroup'));
 app.post('/addUserRoom', require('./router/user/addUserRoom'));
 app.post('/dltUserRoom', require('./router/user/dltUserRoom'));
-app.post('/crtUser', require('./router/user/createUser'));
+
 

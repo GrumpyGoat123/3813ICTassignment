@@ -59,7 +59,7 @@ export class ProfileComponent implements OnInit {
           if(m.error != null){
             alert("Email already exists");
           }else{
-            if(curUser == this.username){
+            if(curUser == this.useremail){
               localStorage.setItem('username', this.username);
               localStorage.setItem('useremail', this.useremail);
               localStorage.setItem('userrole', this.userrole);
@@ -74,9 +74,9 @@ export class ProfileComponent implements OnInit {
       if(this.userrole == "admin" || this.userrole == "super"){
         alert("Cannot give user super/admin role")
       }else{
-        this.httpClient.post<Userobj[]>(BACKEND_URL + '/crtUser', userobj)
+        this.mongoData.add(userobj)
         .subscribe((m: any) => {
-          if(m == 1){
+          if(m.error != null){
             alert("Email already exists");
           }else{
             if(curUser == this.username){

@@ -1,75 +1,49 @@
-var fs = require('fs');
-
-module.exports = function(req, res) {
-    let userobj = {
-        "userid": req.body.userid,
-        "username": req.body.username,
-        "useremail": req.body.useremail,
-        "userrole": req.body.userrole
-    }
-    let uPwdObj = {
-        "username": "",
-        "pwd": "123"
-    }
-    let uArray = [];
-    let uPwdArray = [];
-    let status = [];
-
-    fs.readFile('./data/extendedUsers.json', 'utf8', function(err, data) {
-        //open the file of user list
-        if (err) throw err;
-        uArray = JSON.parse(data);
-       
-        // make some change according to user's post 
-        let i = uArray.findIndex(x => x.username == userobj.username);
-        if (i == -1) {
-            let f = uArray.findIndex(x => x.useremail == userobj.useremail);
-                if(f == -1){
-                    //Store new user
-                    let a = uArray.length + 1;
-                    userobj.userid = a;
-                    uArray.push(userobj);
-                    console.log(userobj);
-
-                    //Grab password data
-                    fs.readFile('./data/users.json', 'utf8', function(err, pwdData) {
-                        if (err) throw err;
-                        uPwdArray = JSON.parse(pwdData)
-                        //Create password for new user
-                        uPwdObj.username = userobj.username;
-                        uPwdArray.push(uPwdObj);
-
-                        let uPwdArrayJson = JSON.stringify(uPwdArray);
-                        fs.writeFile('./data/users.json', uPwdArrayJson, 'utf-8', function(err) {
-                            if (err) throw err;
-                        });
-                    });
-                    // send response to user
-                    res.send(uArray);
-                    // save the file of user list
-                    let uArrayjson = JSON.stringify(uArray);
-                    fs.writeFile('./data/extendedUsers.json', uArrayjson, 'utf-8', function(err) {
-                        if (err) throw err;
-                    });
-                    
-                }else{
-                    console.log("Email already exists");
-                    status.push(1);
-                    res.send(status);
-                }
-            
-            
-        } else {
-            //Update existing user
-            uArray[i] = userobj;
-            // send response to user
-            res.send(uArray);
-            // save the file of user list
-            let uArrayjson = JSON.stringify(uArray);
-            fs.writeFile('./data/extendedUsers.json', uArrayjson, 'utf-8', function(err) {
-                if (err) throw err;
-            });
+module.exports = function(db,app){
+    app.post('/crtUser', function(req,res){
+        if(!req.body){
+            return res.sendStatus(400)
+        }
+        //extended users data
+        let userobj = {
+            "userid": req.body.userid,
+            "username": req.body.username,
+            "useremail": req.body.useremail,
+            "userrole": req.body.userrole
+        }
+        //User password data
+        let uPwdObj = {
+            "userid": req.body.userid,
+            "useremail": req.body.useremail,
+            "pwd": "123"
         }
 
+        //Db collection 
+        const colExtUser = db.collection('extendedUsers');
+        const colUser = db.collection('users');
+        
+        //Check if user exists
+        colExtUser.find({'useremail':userobj.useremail}).count(async (err,count)=>{
+            //If doesnt exist create new user
+            if (count == 0){
+                //Get amount of users and update id
+                userobj.userid = await colExtUser.estimatedDocumentCount();
+                uPwdObj.userid = userobj.userid;
+                
+                //Add new user
+                colExtUser.insertOne(userobj,(err,dbres)=>{
+                    if (err) throw err;
+                    let num = dbres.insertedCount;
+
+                    res.send({'num':1,err:null});
+                });
+                //Add user password
+                colUser.insertOne(uPwdObj, (err, dbres)=>{
+                    if (err) throw err;
+                })
+            }else{  //Update existing user
+                colExtUser.updateOne({useremail:userobj.useremail}, {$set:{username:userobj.username, userrole:userobj.userrole}});
+                res.send({num:0,err:"Updated user"});
+            }
+        });
     });
 }
