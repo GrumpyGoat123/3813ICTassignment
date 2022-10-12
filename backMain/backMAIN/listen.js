@@ -4,7 +4,7 @@ module.exports = {
             let d = new Date();
             let h = d.getHours();
             let m = d.getMinutes();
-            console.log("Server listening on " + PORT + "at " + h + ':' + m);
+            console.log("Server listening on " + PORT + " at " + h + ':' + m);
         })
     }
 }

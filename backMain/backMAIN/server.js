@@ -1,9 +1,22 @@
 var express = require('express');
 var app = express();
+//Mongo Client
+const MongoClient = require('mongodb').MongoClient;
+const url = 'mongodb://localhost:27017';
+const dbName = '3813ICT';
+const client = new MongoClient(url);
+
+//Conect to db server
+client.connect(function(err){
+    console.log("Connected to mongo server");
+    const db = client.db(dbName);
+    client.close();
+})
 
 //Cors
 var cors = require('cors')
 const http = require('http').Server(app);
+
 //SOCKET 
 const io = require('socket.io')(http,{
     cors: {
