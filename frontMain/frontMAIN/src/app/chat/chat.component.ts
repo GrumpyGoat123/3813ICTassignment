@@ -336,7 +336,8 @@ export class ChatComponent implements OnInit {
       'group': this.groupname,
       'roomname': this.roomname,
       'username': this.username,
-      'users': []
+      'newRoom': [],
+      'users': [],
     }
 
     let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);
@@ -348,33 +349,32 @@ export class ChatComponent implements OnInit {
           if (i == -1) {
             alert("No group with that name");
           }else{
-            let fRoom = this.groupObj[i].rooms.room.indexOf(groupObj.roomname);
-            if (fRoom == -1){
-              alert("Room does not exist");
-            }else{
+            let ttlRooms = this.groupObj[i].rooms.length;
+            for(let a = 0; a < this.groupObj[i].rooms.length; a ++){
+              if(this.groupObj[i].rooms[a].room == groupObj.roomname){
+                groupObj.users = this.groupObj[i].rooms[a].users;
+                groupObj.newRoom = this.groupObj[i].rooms;
+                this.mongoData.addUserRoom(groupObj)
+                .subscribe((data:any)=>{
+                  alert("Added user to room");
 
+                  this.mongoData.getGroups()
+                  .subscribe((data)=>{
+                    console.log(data);
+
+                    this.groupObj = data;
+
+                  });
+                });
+                break;
+              }else{
+                ttlRooms --;
+              }
+            }
+            if(ttlRooms == 0){
+              alert("No rooms found");
             }
           }
-        this.httpClient.post(BACKEND_URL + '/addUserRoom', groupObj)
-        .subscribe((data:any)=>{
-
-          if (data == 1){
-            alert("Group does not exist");
-          }else if(data == 2){
-            alert("Room does not exist");
-          }else if(data == 3){
-            alert("User does not exist");
-          }else if(data == 4){
-            alert("User already exists in room");
-          }else if(data == 5){
-            alert("User is not in this group");
-          }
-          else {
-            alert("User added to room");
-          }
-
-
-        })
       }else{
         alert("unauthorized Access");
       }

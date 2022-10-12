@@ -9,20 +9,21 @@ module.exports = function(db,app){
         //group name and room name
         let grpNmeObj =  req.body.group;
         let username = req.body.username;
+        let roomname = req.body.roomname;
+        let newRoom = req.body.newRoom;
         let users = req.body.users;
 
-
-        //Delete user from group user array
-        let i = users.indexOf(username);
-        users.splice(i, 1);
+        users.push(username);
+        a = {room:roomname, users:users};
+        //update rooms
+        let i = newRoom.indexOf(roomname);
+        newRoom.splice(i, 1, a);
 
         //collection
         const colGroups = db.collection('groups');
         
-    
-        
-
-        colGroups.updateOne({group:grpNmeObj}, {$set:{users:users}});
+        //Update new room
+        colGroups.updateOne({group:grpNmeObj}, {$set:{rooms:newRoom}});
         status.push(1);
         res.send(status);
     });
