@@ -10,7 +10,7 @@ module.exports = function(db,app){
         let grpObj = {
             "group": req.body.groupname,
             "users": [],
-            "rooms": []
+            "rooms": {users:[], room:[]}
         }
 
         //collection

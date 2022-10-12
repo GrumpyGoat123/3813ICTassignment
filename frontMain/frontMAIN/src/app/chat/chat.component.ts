@@ -26,6 +26,8 @@ export class ChatComponent implements OnInit {
   groupname = "";
   roomname = "";
 
+  groupObj:any;
+
 
   grouplist = [];
   constructor(private router: Router, private httpClient: HttpClient, private socketService:SocketService, private mongoData:MongoDataService) {
@@ -40,6 +42,14 @@ export class ChatComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.mongoData.getGroups()
+    .subscribe((data)=>{
+      console.log(data);
+
+      this.groupObj = data;
+
+    });
+
       $('#action_menu_btn').click(function(){
         $('.action_menu').toggle();
     });
@@ -94,7 +104,7 @@ export class ChatComponent implements OnInit {
       'groupname': this.groupname
     }
     if(this.userrole == "super" || this.userrole == "admin"){
-      this.httpClient.post(BACKEND_URL + '/dltGrp', userobj)
+      this.mongoData.deleteGroup(userobj)
       .subscribe((data:any)=>{
 
         if (data == 1){
@@ -102,6 +112,7 @@ export class ChatComponent implements OnInit {
         }
         else {
           alert("Deleted Group");
+          console.log(data);
         }
       })
     }else {
@@ -115,25 +126,34 @@ export class ChatComponent implements OnInit {
   crtRoomFunc(){
     let roomObj = {
       'roomName': this.roomname,
-      'group': this.groupname
+      'group': this.groupname,
+      'newRoom': []
     }
 
     if(this.userrole == "super" || this.userrole == "admin" || this.userrole == "assis"){
-      this.httpClient.post(BACKEND_URL + '/crtRoom', roomObj)
-      .subscribe((data:any)=>{
+      let i = this.groupObj.findIndex((x: { group: string; }) => x.group == roomObj.group);
+      if (i == -1) {
+        alert("No group with that name");
+      } else{
+        let fRoom = this.groupObj[i].rooms.room.indexOf(roomObj.roomName);
+        if (fRoom == -1){
+          roomObj.newRoom = this.groupObj[i].rooms.room;
+          this.mongoData.createRoom(roomObj)
+          .subscribe((data:any)=>{
+            alert("Added room to group");
 
-        if (data == 1){
+            this.mongoData.getGroups()
+            .subscribe((data)=>{
+              console.log(data);
+
+              this.groupObj = data;
+
+            });
+          });
+        }else{
           alert("Already a room with that name");
-        }else if(data == 2){
-          alert("No group with that name");
         }
-
-        else {
-          alert("Added room to group");
-        }
-
-
-      })
+      }
     }else{
       alert("unauthorized Access");
     }

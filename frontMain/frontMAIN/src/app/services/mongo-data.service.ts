@@ -20,4 +20,16 @@ export class MongoDataService {
   createGroup(groupname:any){
     return this.http.post<any>('http://localhost:3000/crtGrp', groupname);
   }
+
+  deleteGroup(groupname:any){
+    return this.http.post<any>('http://localhost:3000/dltGrp', groupname);
+  }
+
+  createRoom(roomObj:any){
+    return this.http.post<any>('http://localhost:3000/crtRoom', roomObj);
+  }
+
+  getGroups(){
+    return this.http.get<any>('http://localhost:3000/getGrp');
+  }
 }

@@ -1,41 +1,35 @@
-var fs = require('fs');
+module.exports = function(db,app){
+    app.post('/dltGrp', function(req,res){
+        if(!req.body){
+            return res.sendStatus(400)
+        }
+        //error status
+        let status = [];
 
-module.exports = function(req, res) {
-    let userobj =  req.body.groupname;
-    let status = [];
+        //group object created
+        let grpObj = req.body.groupname
 
-    console.log(req.body.groupname);
+        //collection
+        const colGroups = db.collection('groups');
+        
     
-    let uArray = [];
-        fs.readFile('./data/groups.json', 'utf8', function(err, data) {
-            //open the file of groups list
-            if (err) throw err;
-            uArray = JSON.parse(data);
-            // Check if group exists and place new group
-            let i = uArray.findIndex(x => x.group == userobj);
-            if (i == -1) {
-                console.log("Couldnt find the group");
+        
+
+        colGroups.find({'group':grpObj}).count((err,count)=>{
+            //If exists delete group
+            if (count == 0){
+                //No group with that name
                 status.push(1);
                 res.send(status);
-            
-            } else {
-                uArray[i] = {};
 
-                console.log(uArray);
-                // send response to user
-                res.send(uArray);
-                // save the file of new group
-                let uArrayjson = JSON.stringify(uArray);
                 
-                fs.writeFile('./data/groups.json', uArrayjson, 'utf-8', function(err) {
-                    if (err) throw err;
+            }else{  //Group exists
+                colGroups.deleteOne({'group':grpObj}, (err, result)=>{
+                    colGroups.find({}).toArray((err,data)=>{
+                        res.send(data);
+                    });
                 });
-                    
-                console.log("Group Deleted");
             }
-            
         });
-    
-
-    
+    });
 }

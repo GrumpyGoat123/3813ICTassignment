@@ -1,17 +1,16 @@
 module.exports = function(db,app){
-    app.post('/crtGrp', function(req,res){
+    app.post('/crtRoom', function(req,res){
         if(!req.body){
             return res.sendStatus(400)
         }
         //error status
         let status = [];
 
-        //group object created
-        let grpObj = {
-            "group": req.body.groupname,
-            "users": [],
-            "rooms": []
-        }
+        //group name and room name
+        let grpNmeObj =  req.body.group;
+        let rmNameObj = req.body.roomName;
+        let newRoom = req.body.newRoom;
+        newRoom.push(rmNameObj);
 
         //collection
         const colGroups = db.collection('groups');
@@ -19,21 +18,8 @@ module.exports = function(db,app){
     
         
 
-        colGroups.find({'group':grpObj.group}).count((err,count)=>{
-            //If doesnt exist create new group
-            if (count == 0){
-                //Add new group
-                colGroups.insertOne(grpObj,(err,dbres)=>{
-                    if (err) throw err;
-                    let num = dbres.insertedCount;
-
-                    res.send(grpObj);
-                });
-                
-            }else{  //Already exists 
-                status.push(1);
-                res.send(status)
-            }
-        });
+        colGroups.updateOne({group:grpNmeObj}, {$set:{rooms:{room:newRoom}}});
+        status.push(1);
+        res.send(status);
     });
 }
