@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SocketService } from '../services/socket.service';
 import { FormsModule } from '@angular/forms';
+import { MongoDataService } from '../services/mongo-data.service';
 
 const BACKEND_URL = 'http://localhost:3000';
 
@@ -27,7 +28,7 @@ export class ChatComponent implements OnInit {
 
 
   grouplist = [];
-  constructor(private router: Router, private httpClient: HttpClient, private socketService:SocketService) {
+  constructor(private router: Router, private httpClient: HttpClient, private socketService:SocketService, private mongoData:MongoDataService) {
     if (!(localStorage.getItem('userlogin')=="true")){
       alert("login please");
       this.router.navigateByUrl("/login");
@@ -63,7 +64,7 @@ export class ChatComponent implements OnInit {
       'groupname': this.groupname
     }
     if(this.userrole == "super" || this.userrole == "admin"){
-      this.httpClient.post(BACKEND_URL + '/crtGrp', userobj)
+      this.mongoData.createGroup(userobj)
       .subscribe((data:any)=>{
 
         if (data == 1){

@@ -1,40 +1,38 @@
 module.exports = function(db,app){
-    app.post('/add', function(req,res){
+    app.post('/crtGrp', function(req,res){
         if(!req.body){
             return res.sendStatus(400)
         }
-        let userobj = {
-            "userid": req.body.userid,
-            "username": req.body.username,
-            "useremail": req.body.useremail,
-            "userrole": req.body.userrole
+        //error status
+        let status = [];
+
+        //group object created
+        let grpObj = {
+            "group": req.body.groupname,
+            "users": [],
+            "rooms": []
         }
-        let uPwdObj = {
-            "userid": req.body.userid,
-            "username": req.body.username,
-            "pwd": "123"
-        }
-        const colExtUser = db.collection('extendedUsers');
-        const colUser = db.collection('users');
+
+        //collection
+        const colGroups = db.collection('groups');
+        
+    
         
 
-        colExtUser.find({'useremail':userobj.useremail}).count(async (err,count)=>{
+        colGroups.find({'group':grpObj.group}).count((err,count)=>{
+            //If doesnt exist create new group
             if (count == 0){
-                userobj.userid = await colExtUser.estimatedDocumentCount();
-                uPwdObj.userid = userobj.userid;
-                console.log(userobj.userid);
-                colExtUser.insertOne(userobj,(err,dbres)=>{
+                //Add new group
+                colGroups.insertOne(grpObj,(err,dbres)=>{
                     if (err) throw err;
                     let num = dbres.insertedCount;
 
-                    res.send({'num':1,err:null});
+                    res.send(grpObj);
                 });
-                colUser.insertOne(uPwdObj, (err, dbres)=>{
-                    if (err) throw err;
-                })
-            }else{
-                colExtUser.updateOne({useremail:userobj.useremail}, {$set:{username:userobj.username, userrole:userobj.userrole}});
-                res.send({num:0,err:"Updated user"});
+                
+            }else{  //Already exists 
+                status.push(1);
+                res.send(status)
             }
         });
     });

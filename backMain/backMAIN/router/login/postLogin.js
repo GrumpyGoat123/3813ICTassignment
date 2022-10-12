@@ -1,35 +1,35 @@
-var fs = require('fs');
+module.exports = function(db,app){
+    app.post('/login', function(req,res){
+        if(!req.body){
+            return res.sendStatus(400)
+        }
+        
+        //Password obj
+        let uPwdObj = {
+            "useremail": req.body.useremail,
+            "pwd": req.body.pwd
+        }
+        
+        //Collections
+        const colExtUser = db.collection('extendedUsers');
+        const colUser = db.collection('users');
+    
+        
 
-module.exports = function(req, res) {
-    var u = req.body.username;
-    var p = req.body.pwd;
-    c = u + p;
-    console.log(c);
-    fs.readFile('./data/users.json', 'utf8', function(err, data) {
-        // the above path is with respect to where we run server.js
-        if (err) throw err;
-        let userArray = JSON.parse(data);
-        console.log(userArray);
-        let i = userArray.findIndex(user =>
-            ((user.username == u) && (user.pwd == p)));
-        if (i == -1) {
-            res.send({
-                "ok": false
-            });
-        } else {
-            fs.readFile('./data/extendedUsers.json', 'utf8', function(err, data) {
-                // the above path is with respect to where we run server.js
-                if (err) throw err;
-                let extendedUserArray = JSON.parse(data);
-
-                let i = extendedUserArray.findIndex(user =>
-                    ((user.username == u)));
-                let userData = extendedUserArray[i];
+        //Check if email and password is correct
+        colUser.find({$and:[{'useremail':uPwdObj.useremail}, {'pwd':uPwdObj.pwd}]}).count(async (err, count)=>{
+            //If wrong send back false
+            if (count == 0){
+                res.send({
+                    "ok": false
+                });
+            }else{
+                //Else send back true with users data
+                let userData = await colExtUser.find({'useremail':uPwdObj.useremail}).next();
                 userData["ok"] = true;
                 console.log(userData);
                 res.send(userData);
-            })
-        }
+            }
+        });
     });
-
 }

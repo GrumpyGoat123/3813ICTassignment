@@ -54,7 +54,7 @@ export class ProfileComponent implements OnInit {
 
     if(curUserRole == "super"){
 
-      this.mongoData.add(userobj)
+      this.mongoData.createUser(userobj)
         .subscribe((m: any) => {
           if(m.error != null){
             alert("Email already exists");
@@ -74,7 +74,7 @@ export class ProfileComponent implements OnInit {
       if(this.userrole == "admin" || this.userrole == "super"){
         alert("Cannot give user super/admin role")
       }else{
-        this.mongoData.add(userobj)
+        this.mongoData.createUser(userobj)
         .subscribe((m: any) => {
           if(m.error != null){
             alert("Email already exists");

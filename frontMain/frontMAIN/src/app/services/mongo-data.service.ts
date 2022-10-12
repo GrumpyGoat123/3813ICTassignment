@@ -8,7 +8,16 @@ import { Userobj } from '../userobj';
 export class MongoDataService {
 
   constructor(private http:HttpClient) { }
-  add(userobj:Userobj){
+  createUser(userobj:Userobj){
     return this.http.post<any>('http://localhost:3000/crtUser', userobj);
+  }
+
+  login(user:any){
+    console.log(user);
+    return this.http.post<any>('http://localhost:3000/login', user);
+  }
+
+  createGroup(groupname:any){
+    return this.http.post<any>('http://localhost:3000/crtGrp', groupname);
   }
 }

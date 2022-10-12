@@ -17,8 +17,19 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         console.log("Connected to mongo server");
         // Database Name
         const db = client.db(dbName);
-  
+
+        //require('./router/mongo/add')(db, app);
+        //Login
+        require('./router/login/postLogin')(db, app);
+        
+        //User
         require('./router/user/createUser')(db, app);
+
+        //Groups
+        require('./router/group/createGroup')(db, app);
+        
+
+        
         
 });
 
@@ -60,10 +71,10 @@ sockets.connect(io, PORT);
 server.listen(http, PORT);
 //POST METHODS
 //Login 
-app.post('/login', require('./router/login/postLogin'));
+
 
 //Groups
-app.post('/crtGrp', require('./router/group/createGroup'));
+
 app.post('/dltGrp', require('./router/group/deleteGroup'));
 
 //Rooms

@@ -1,38 +1,39 @@
-var fs = require('fs');
+module.exports = function(db,app){
+    app.post('/crtGrp', function(req,res){
+        if(!req.body){
+            return res.sendStatus(400)
+        }
+        //error status
+        let status = [];
 
-module.exports = function(req, res) {
-    let userobj =  req.body.groupname;
-    console.log(req.body.groupname);
-    let status = [];
-    
-    let uArray = [];
+        //group object created
+        let grpObj = {
+            "group": req.body.groupname,
+            "users": [],
+            "rooms": []
+        }
+
+        //collection
+        const colGroups = db.collection('groups');
         
-        fs.readFile('./data/groups.json', 'utf8', function(err, data) {
-            //open the file of groups list
-            if (err) throw err;
-            uArray = JSON.parse(data);
-            // Check if group exists and place new group
-            let i = uArray.findIndex(x => x.group == userobj);
-            if (i == -1) {
-                uArray.push({
-                    "group": req.body.groupname,
-                    "users": [],
-                    "rooms":[]
-                })
-                console.log(uArray);
-                // send response to user
-                res.send(uArray);
-                // save the file of new group
-                let uArrayjson = JSON.stringify(uArray);
-                fs.writeFile('./data/groups.json', uArrayjson, 'utf-8', function(err) {
-                if (err) throw err;
+    
+        
+
+        colGroups.find({'group':grpObj.group}).count((err,count)=>{
+            //If doesnt exist create new group
+            if (count == 0){
+                //Add new group
+                colGroups.insertOne(grpObj,(err,dbres)=>{
+                    if (err) throw err;
+                    let num = dbres.insertedCount;
+
+                    res.send(grpObj);
                 });
-            } else {
-                console.log("Already a group with that name");
+                
+            }else{  //Already exists 
                 status.push(1);
-                res.send(status);
-                    
+                res.send(status)
             }
-            
-        });    
+        });
+    });
 }
