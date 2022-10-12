@@ -10,7 +10,11 @@ module.exports = function(db,app){
         let grpNmeObj =  req.body.group;
         let username = req.body.username;
         let users = req.body.users;
-        users.push(username);
+
+
+        //Delete user from group user array
+        let i = users.indexOf(username);
+        users.splice(i, 1);
 
         //collection
         const colGroups = db.collection('groups');

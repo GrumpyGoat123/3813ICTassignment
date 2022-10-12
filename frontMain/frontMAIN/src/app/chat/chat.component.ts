@@ -265,7 +265,7 @@ export class ChatComponent implements OnInit {
         alert("unauthorized Access");
       }
     }
-    //NEED TO CHECK IF USER EXISTS
+
 
 
   }
@@ -275,27 +275,41 @@ export class ChatComponent implements OnInit {
     let groupObj = {
       'group': this.groupname,
       'username': this.username,
+      'users': []
     }
 
-    if(this.userrole == "super" || this.userrole == "admin"){
-      this.httpClient.post(BACKEND_URL + '/dltUserGroup', groupObj)
-      .subscribe((data:any)=>{
-
-        if (data == 1){
-          alert("Group does not exist");
-        }else if(data == 2){
-          alert("User does not exist in group");
-        }else if(data == 3){
-          alert("User does not exist");
-        }
-        else {
-          alert("User deleted from group");
-        }
-
-
-      })
+    let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);
+    if(check == -1){
+      alert("Username doesnt exist");
     }else{
-      alert("unauthorized Access");
+      if(this.userrole == "super" || this.userrole == "admin"){
+        let i = this.groupObj.findIndex((x: { group: string; }) => x.group == groupObj.group);
+        if (i == -1) {
+          alert("No group with that name");
+        }else{
+            let userIndex = this.groupObj[i].users.indexOf(groupObj.username);
+            if(userIndex == -1){
+              alert("User does not exist in group");
+            }else{
+              groupObj.users = this.groupObj[i].users;
+                this.mongoData.deleteUserGroup(groupObj)
+                .subscribe((data:any)=>{
+                  alert("User delete from group");
+
+                  this.mongoData.getGroups()
+                  .subscribe((data)=>{
+                    console.log(data);
+
+                    this.groupObj = data;
+
+                  });
+                });
+            }
+        }
+
+      }else{
+        alert("unauthorized Access");
+      }
     }
   }
 

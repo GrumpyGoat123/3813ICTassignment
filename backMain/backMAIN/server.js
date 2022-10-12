@@ -25,11 +25,11 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         //User
         require('./router/user/createUser')(db, app);
         require('./router/user/addUserGroup')(db, app);
-        require('./router/user/deleteUserGroup')(db, app);
+        //require('./router/user/deleteUserGroup')(db, app);
 
         //Groups
         require('./router/group/createGroup')(db, app);
-        //require('./router/group/deleteGroup')(db, app);
+        require('./router/group/deleteGroup')(db, app);
         
         //Rooms
         require('./router/room/createRoom')(db, app);

@@ -37,6 +37,10 @@ export class MongoDataService {
     return this.http.post<any>('http://localhost:3000/addUserGroup', groupObj);
   }
 
+  deleteUserGroup(groupObj:any){
+    return this.http.post<any>('http://localhost:3000/dltUserGroup', groupObj);
+  }
+
   getGroups(){
     return this.http.get<any>('http://localhost:3000/getGrp');
   }
