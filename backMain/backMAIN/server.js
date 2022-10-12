@@ -20,7 +20,6 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
 
 
         //Post methods
-        require('./router/mongo/add')(db, app);
         //Login
         require('./router/login/postLogin')(db, app);
         
@@ -29,7 +28,7 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         require('./router/user/addUserGroup')(db, app);
         require('./router/user/dltUserGroup')(db, app);
         require('./router/user/addUserRoom')(db, app);
-        //require('./router/user/dltUserRoom')(db, app);
+        require('./router/user/dltUserRoom')(db, app);
 
         //Groups
         require('./router/group/createGroup')(db, app);
