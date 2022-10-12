@@ -1,49 +1,23 @@
-var fs = require('fs');
+module.exports = function(db,app){
+    app.post('/crtRoom', function(req,res){
+        if(!req.body){
+            return res.sendStatus(400)
+        }
+        //error status
+        let status = [];
 
-module.exports = function(req, res) {
-    let grpNmeObj =  req.body.group;
-    let rmNameObj = req.body.roomName;
-    console.log(rmNameObj);
+        //group name and room name
+        let grpNmeObj =  req.body.group;
+        let rmNameObj = req.body.roomName;
+        let newRoom = req.body.newRoom;
+        let roomUsers = req.body.roomUsers;
+        newRoom.push(rmNameObj);
 
-    console.log(req.body.group);
-    let status = [];
-    
-    let uArray = [];
+        //collection
+        const colGroups = db.collection('groups');
         
-        fs.readFile('./data/groups.json', 'utf8', function(err, data) {
-            //open the file of groups list
-            if (err) throw err;
-            uArray = JSON.parse(data);
-            // Check if group exists and place new group
-            let i = uArray.findIndex(x => x.group == grpNmeObj);
-            if (i == -1) {
-                console.log("No group with that name");
-                status.push(2);
-                res.send(status);
-                    
-            } else {
-                let fRoom = uArray[i].rooms.findIndex(x => x.room == rmNameObj);
-                if(fRoom == -1){
-                    console.log("Store new room");
-                    uArray[i].rooms.push({
-                        "room": rmNameObj,
-                        "users": []
-                    })
-
-                    res.send(uArray);
-                    let uArrayjson = JSON.stringify(uArray);
-                    fs.writeFile('./data/groups.json', uArrayjson, 'utf-8', function(err) {
-                        if (err) throw err;
-                    });
-                }else{
-                    console.log("Room already exists");
-                    status.push(1);
-                    res.send(status);
-                    
-                }
-                
-                    
-            }
-            
-        });    
+        colGroups.updateOne({group:grpNmeObj}, {$set:{rooms:{room:newRoom, users:roomUsers}}});
+        status.push(1);
+        res.send(status);
+    });
 }

@@ -29,6 +29,10 @@ export class MongoDataService {
     return this.http.post<any>('http://localhost:3000/crtRoom', roomObj);
   }
 
+  deleteRoom(roomObj:any){
+    return this.http.post<any>('http://localhost:3000/dltRoom', roomObj);
+  }
+
   getGroups(){
     return this.http.get<any>('http://localhost:3000/getGrp');
   }

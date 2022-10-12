@@ -18,7 +18,7 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         // Database Name
         const db = client.db(dbName);
 
-        require('./router/mongo/add')(db, app);
+        //require('./router/mongo/add')(db, app);
         //Login
         require('./router/login/postLogin')(db, app);
         
@@ -30,7 +30,8 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         require('./router/group/deleteGroup')(db, app);
         
         //Rooms
-        //require('./router/room/deleteRoom')(db, app);
+        require('./router/room/createRoom')(db, app);
+        require('./router/room/deleteRoom')(db, app);
 
         //Get Data
         require('./router/get/getGroups')(db, app);

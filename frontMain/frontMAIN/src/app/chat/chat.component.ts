@@ -83,6 +83,13 @@ export class ChatComponent implements OnInit {
 
         else {
           this.grouplist = data;
+          this.mongoData.getGroups()
+            .subscribe((data)=>{
+              console.log(data);
+
+              this.groupObj = data;
+
+          });
           alert("Created new group");
         }
 
@@ -111,6 +118,13 @@ export class ChatComponent implements OnInit {
             alert("Couldnt find the group");
         }
         else {
+          this.mongoData.getGroups()
+            .subscribe((data)=>{
+              console.log(data);
+
+              this.groupObj = data;
+
+            });
           alert("Deleted Group");
           console.log(data);
         }
@@ -127,7 +141,8 @@ export class ChatComponent implements OnInit {
     let roomObj = {
       'roomName': this.roomname,
       'group': this.groupname,
-      'newRoom': []
+      'newRoom': [],
+      'roomUsers': []
     }
 
     if(this.userrole == "super" || this.userrole == "admin" || this.userrole == "assis"){
@@ -138,6 +153,7 @@ export class ChatComponent implements OnInit {
         let fRoom = this.groupObj[i].rooms.room.indexOf(roomObj.roomName);
         if (fRoom == -1){
           roomObj.newRoom = this.groupObj[i].rooms.room;
+          roomObj.roomUsers = this.groupObj[i].rooms.users;
           this.mongoData.createRoom(roomObj)
           .subscribe((data:any)=>{
             alert("Added room to group");
@@ -163,25 +179,38 @@ export class ChatComponent implements OnInit {
   dltRoomFunc(){
     let roomObj = {
       'roomName': this.roomname,
-      'group': this.groupname
+      'group': this.groupname,
+      'newRoom': [],
+      'roomUsers': []
     }
 
+
     if(this.userrole == "super" || this.userrole == "admin"){
-      this.httpClient.post(BACKEND_URL + '/dltRoom', roomObj)
-      .subscribe((data:any)=>{
-
-        if (data == 1){
+      let i = this.groupObj.findIndex((x: { group: string; }) => x.group == roomObj.group);
+      if (i == -1) {
+        alert("No group with that name");
+      }else{
+        let fRoom = this.groupObj[i].rooms.room.indexOf(roomObj.roomName);
+        if (fRoom == -1){
           alert("No room with that name");
-        }else if(data == 2){
-          alert("No group with that name");
+        }else{
+          roomObj.newRoom = this.groupObj[i].rooms.room;
+          roomObj.roomUsers = this.groupObj[i].rooms.users;
+          console.log(roomObj.newRoom)
+          this.mongoData.deleteRoom(roomObj)
+          .subscribe((data:any)=>{
+            alert("Deleted Room");
+
+            this.mongoData.getGroups()
+            .subscribe((data)=>{
+              console.log(data);
+
+              this.groupObj = data;
+
+            });
+          });
         }
-
-        else {
-          alert("Deleted Room");
-        }
-
-
-      })
+      }
     }else{
       alert("unauthorized Access");
     }
