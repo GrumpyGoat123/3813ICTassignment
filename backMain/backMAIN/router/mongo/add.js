@@ -1,5 +1,5 @@
 module.exports = function(db,app){
-    app.post('/dltUserGroup', function(req,res){
+    app.post('/addUserRoom', function(req,res){
         if(!req.body){
             return res.sendStatus(400)
         }

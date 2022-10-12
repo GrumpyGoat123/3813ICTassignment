@@ -25,7 +25,8 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         //User
         require('./router/user/createUser')(db, app);
         require('./router/user/addUserGroup')(db, app);
-        //require('./router/user/deleteUserGroup')(db, app);
+        require('./router/user/dltUserGroup')(db, app);
+        //require('./router/user/addUserRoom')(db, app);
 
         //Groups
         require('./router/group/createGroup')(db, app);
@@ -89,7 +90,7 @@ server.listen(http, PORT);
 
 //Users
 
-app.post('/addUserRoom', require('./router/user/addUserRoom'));
+
 app.post('/dltUserRoom', require('./router/user/dltUserRoom'));
 
 
