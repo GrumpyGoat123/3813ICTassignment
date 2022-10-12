@@ -1,5 +1,5 @@
 module.exports = function(db,app){
-    app.post('/crtRoom', function(req,res){
+    app.post('/dltUserGroup', function(req,res){
         if(!req.body){
             return res.sendStatus(400)
         }
@@ -8,9 +8,9 @@ module.exports = function(db,app){
 
         //group name and room name
         let grpNmeObj =  req.body.group;
-        let rmNameObj = req.body.roomName;
-        let newRoom = req.body.newRoom;
-        newRoom.push(rmNameObj);
+        let username = req.body.username;
+        let users = req.body.users;
+        users.push(username);
 
         //collection
         const colGroups = db.collection('groups');
@@ -18,7 +18,7 @@ module.exports = function(db,app){
     
         
 
-        colGroups.updateOne({group:grpNmeObj}, {$set:{rooms:{room:newRoom}}});
+        colGroups.updateOne({group:grpNmeObj}, {$set:{users:users}});
         status.push(1);
         res.send(status);
     });

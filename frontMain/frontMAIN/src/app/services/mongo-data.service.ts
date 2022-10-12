@@ -33,7 +33,15 @@ export class MongoDataService {
     return this.http.post<any>('http://localhost:3000/dltRoom', roomObj);
   }
 
+  addUserGroup(groupObj:any){
+    return this.http.post<any>('http://localhost:3000/addUserGroup', groupObj);
+  }
+
   getGroups(){
     return this.http.get<any>('http://localhost:3000/getGrp');
+  }
+
+  getUsers(){
+    return this.http.get<any>('http://localhost:3000/getUsers');
   }
 }

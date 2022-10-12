@@ -22,7 +22,7 @@ module.exports = function(db,app){
         const colUser = db.collection('users');
         
         //Check if user exists
-        colExtUser.find({'useremail':userobj.useremail}).count(async (err,count)=>{
+        colExtUser.find({$or:[{'useremail':userobj.useremail},{'username':userobj.username}]}).count(async (err,count)=>{
             //If doesnt exist create new user
             if (count == 0){
                 //Get amount of users and update id

@@ -27,6 +27,7 @@ export class ChatComponent implements OnInit {
   roomname = "";
 
   groupObj:any;
+  userObj:any;
 
 
   grouplist = [];
@@ -47,6 +48,13 @@ export class ChatComponent implements OnInit {
       console.log(data);
 
       this.groupObj = data;
+
+    });
+    this.mongoData.getUsers()
+    .subscribe((data)=>{
+      console.log(data);
+
+      this.userObj = data;
 
     });
 
@@ -222,28 +230,44 @@ export class ChatComponent implements OnInit {
     let groupObj = {
       'group': this.groupname,
       'username': this.username,
+      'users': []
     }
 
-    if(this.userrole == "super" || this.userrole == "admin"){
-      this.httpClient.post(BACKEND_URL + '/addUserGroup', groupObj)
-      .subscribe((data:any)=>{
-
-        if (data == 1){
-          alert("Group does not exist");
-        }else if(data == 2){
-          alert("User already exists in group");
-        }else if(data == 3){
-          alert("User does not exist");
-        }
-        else {
-          alert("User added to group");
-        }
-
-
-      })
+    let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);
+    if(check == -1){
+      alert("Username doesnt exist");
     }else{
-      alert("unauthorized Access");
+      if(this.userrole == "super" || this.userrole == "admin"){
+      let i = this.groupObj.findIndex((x: { group: string; }) => x.group == groupObj.group);
+      if (i == -1) {
+        alert("No group with that name");
+      }else{
+          let userIndex = this.groupObj[i].users.indexOf(groupObj.username);
+          if(userIndex == -1){
+            groupObj.users = this.groupObj[i].users;
+            this.mongoData.addUserGroup(groupObj)
+            .subscribe((data:any)=>{
+              alert("User added to group");
+
+              this.mongoData.getGroups()
+              .subscribe((data)=>{
+                console.log(data);
+
+                this.groupObj = data;
+
+              });
+            });
+          }else{
+            alert("User already exists in group");
+          }
+        }
+      }else{
+        alert("unauthorized Access");
+      }
     }
+    //NEED TO CHECK IF USER EXISTS
+
+
   }
 
   //Delete user from group

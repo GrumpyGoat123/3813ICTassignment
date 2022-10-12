@@ -12,14 +12,15 @@ module.exports = function(db,app){
         let newRoom = req.body.newRoom;
         let roomUsers = req.body.roomUsers;
 
+        //Delete room from room array
         let i = newRoom.indexOf(rmNameObj);
-        
         newRoom.splice(i, 1);
         
         
         //collection
         const colGroups = db.collection('groups');
         
+        //Update room object
         colGroups.updateOne({group:grpNmeObj}, {$set:{rooms:{room:newRoom, users:roomUsers}}});
         status.push(1);
         res.send(status);
