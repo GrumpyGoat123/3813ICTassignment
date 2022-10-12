@@ -18,6 +18,8 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         // Database Name
         const db = client.db(dbName);
 
+
+        //Post methods
         require('./router/mongo/add')(db, app);
         //Login
         require('./router/login/postLogin')(db, app);
@@ -26,7 +28,8 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         require('./router/user/createUser')(db, app);
         require('./router/user/addUserGroup')(db, app);
         require('./router/user/dltUserGroup')(db, app);
-        //require('./router/user/addUserRoom')(db, app);
+        require('./router/user/addUserRoom')(db, app);
+        //require('./router/user/dltUserRoom')(db, app);
 
         //Groups
         require('./router/group/createGroup')(db, app);
@@ -78,19 +81,6 @@ const PORT = 3000;
 sockets.connect(io, PORT);
 
 server.listen(http, PORT);
-//POST METHODS
-//Login 
 
-
-//Groups
-
-
-//Rooms
-
-
-//Users
-
-
-app.post('/dltUserRoom', require('./router/user/dltUserRoom'));
 
 

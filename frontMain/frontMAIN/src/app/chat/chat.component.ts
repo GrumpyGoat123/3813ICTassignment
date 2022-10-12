@@ -337,40 +337,58 @@ export class ChatComponent implements OnInit {
       'roomname': this.roomname,
       'username': this.username,
       'newRoom': [],
-      'users': [],
+      'users': [] = [],
     }
 
     let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);
     if(check == -1){
       alert("Username doesnt exist");
     }else{
+      //User role check
         if(this.userrole == "super" || this.userrole == "admin" || this.userrole == "assis"){
+          //Find group
           let i = this.groupObj.findIndex((x: { group: string; }) => x.group == groupObj.group);
           if (i == -1) {
             alert("No group with that name");
           }else{
             let ttlRooms = this.groupObj[i].rooms.length;
             for(let a = 0; a < this.groupObj[i].rooms.length; a ++){
+              //Find room in group
               if(this.groupObj[i].rooms[a].room == groupObj.roomname){
                 groupObj.users = this.groupObj[i].rooms[a].users;
                 groupObj.newRoom = this.groupObj[i].rooms;
-                this.mongoData.addUserRoom(groupObj)
-                .subscribe((data:any)=>{
-                  alert("Added user to room");
+                //Check if user exists in room
+                let userCheck = groupObj.users.length;
+                for(let b = 0; b < groupObj.users.length; b++){
+                  if(groupObj.users[b] == groupObj.username){
+                    alert("User already exists in room")
+                    break;
+                  }else{
+                    userCheck --;
+                  }
+                }
+                if(userCheck == 0){
+                  //User does not exist in room
+                  this.mongoData.addUserRoom(groupObj)
+                  .subscribe((data:any)=>{
+                    alert("Added user to room");
 
-                  this.mongoData.getGroups()
-                  .subscribe((data)=>{
-                    console.log(data);
+                    this.mongoData.getGroups()
+                    .subscribe((data)=>{
+                      console.log(data);
 
-                    this.groupObj = data;
+                      this.groupObj = data;
 
+                      });
                   });
-                });
-                break;
+                  break;
+                }
+
               }else{
                 ttlRooms --;
               }
             }
+            //Could not find room
             if(ttlRooms == 0){
               alert("No rooms found");
             }
@@ -387,32 +405,69 @@ export class ChatComponent implements OnInit {
     let groupObj = {
       'group': this.groupname,
       'roomname': this.roomname,
-      'username': this.username
+      'username': this.username,
+      'newRoom': [],
+      'users': [] = []
     }
-    if(this.userrole == "super" || this.userrole == "admin" || this.userrole == "assis"){
-      this.httpClient.post(BACKEND_URL + '/dltUserRoom', groupObj)
-      .subscribe((data:any)=>{
 
-        if (data == 1){
-          alert("Group does not exist");
-        }else if(data == 2){
-          alert("Room does not exist");
-        }else if(data == 3){
-          alert("User does not exist");
-        }else if(data == 4){
-          alert("User does not exist in this room");
-        }else if(data == 5){
-          alert("User is not in this group");
-        }
-        else {
-          alert("User removed from room");
-        }
-
-
-      })
+    let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);
+    if(check == -1){
+      alert("Username doesnt exist");
     }else{
-      alert("unauthorized Access");
+      //User role check
+      if(this.userrole == "super" || this.userrole == "admin" || this.userrole == "assis"){
+        //Find group
+        let i = this.groupObj.findIndex((x: { group: string; }) => x.group == groupObj.group);
+          if (i == -1) {
+            alert("No group with that name");
+          }else{
+            let ttlRooms = this.groupObj[i].rooms.length;
+            for(let a = 0; a < this.groupObj[i].rooms.length; a ++){
+              //Find room in group
+              if(this.groupObj[i].rooms[a].room == groupObj.roomname){
+                groupObj.users = this.groupObj[i].rooms[a].users;
+                groupObj.newRoom = this.groupObj[i].rooms;
+                //Check if user exists in room
+                let userCheck = groupObj.users.length;
+                for(let b = 0; b < groupObj.users.length; b++){
+                  if(groupObj.users[b] == groupObj.username){
+                    this.mongoData.deleteUserRoom(groupObj)
+                    .subscribe((data:any)=>{
+                      alert("Deleted user from room");
+
+                      this.mongoData.getGroups()
+                      .subscribe((data)=>{
+                        console.log(data);
+
+                        this.groupObj = data;
+
+                        });
+                    });
+                    break;
+                  }else{
+                    userCheck --;
+                  }
+                }
+                //Cant find user in room
+                if(userCheck == 0){
+                  alert("User does not exist in this room");
+                  break;
+                }
+              }else{
+                ttlRooms --;
+              }
+            }
+            //Could not find room
+            if(ttlRooms == 0){
+              alert("No rooms found");
+            }
+          }
+
+      }else{
+        alert("unauthorized Access");
+      }
     }
+
   }
 
 

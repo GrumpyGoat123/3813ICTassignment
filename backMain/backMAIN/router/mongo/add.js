@@ -1,5 +1,5 @@
 module.exports = function(db,app){
-    app.post('/addUserRoom', function(req,res){
+    app.post('/dltUserRoom', function(req,res){
         if(!req.body){
             return res.sendStatus(400)
         }
@@ -13,10 +13,15 @@ module.exports = function(db,app){
         let newRoom = req.body.newRoom;
         let users = req.body.users;
 
-        users.push(username);
+       
+        //Create a new room object
+        let b = users.indexOf(username);
+        users.splice(b, 1);
         a = {room:roomname, users:users};
+
         //update rooms
         let i = newRoom.indexOf(roomname);
+        console.log(i)
         newRoom.splice(i, 1, a);
 
         //collection
