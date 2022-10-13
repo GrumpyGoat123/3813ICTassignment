@@ -8,7 +8,9 @@ module.exports = function(db,app){
             "userid": req.body.userid,
             "username": req.body.username,
             "useremail": req.body.useremail,
-            "userrole": req.body.userrole
+            "userrole": req.body.userrole,
+            "usergroups": [] = [],
+            "userrooms": [] = []
         }
         //User password data
         let uPwdObj = {

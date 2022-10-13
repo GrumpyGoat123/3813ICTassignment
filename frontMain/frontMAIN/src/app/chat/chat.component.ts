@@ -247,8 +247,10 @@ export class ChatComponent implements OnInit {
     let groupObj = {
       'group': this.groupname,
       'username': this.username,
-      'users': []
+      'users': [],
+      'usergroups': this.userObj[0].usergroups,
     }
+
 
     let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);
     if(check == -1){
@@ -292,7 +294,8 @@ export class ChatComponent implements OnInit {
     let groupObj = {
       'group': this.groupname,
       'username': this.username,
-      'users': []
+      'users': [],
+      'usergroups': this.userObj[0].usergroups,
     }
 
     let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);
@@ -338,6 +341,7 @@ export class ChatComponent implements OnInit {
       'username': this.username,
       'newRoom': [],
       'users': [] = [],
+      'userrooms': this.userObj[0].userrooms,
     }
 
     let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);
@@ -407,7 +411,8 @@ export class ChatComponent implements OnInit {
       'roomname': this.roomname,
       'username': this.username,
       'newRoom': [],
-      'users': [] = []
+      'users': [] = [],
+      'userrooms': this.userObj[0].userrooms,
     }
 
     let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);

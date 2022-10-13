@@ -10,14 +10,22 @@ module.exports = function(db,app){
         let grpNmeObj =  req.body.group;
         let username = req.body.username;
         let users = req.body.users;
+        let usergroups = req.body.usergroups;
 
-
-        //Delete user from group user array
+        //Delete user from group array
         let i = users.indexOf(username);
         users.splice(i, 1);
 
+        //Delete group from user array
+        let a = usergroups.indexOf(grpNmeObj);
+        usergroups.splice(a, 1);
+
         //collection
         const colGroups = db.collection('groups');
+        const colUsers = db.collection('extendedUsers');
+
+        //Delete group from user data
+        colUsers.updateOne({username:username}, {$set:{usergroups:usergroups}});
         
     
         

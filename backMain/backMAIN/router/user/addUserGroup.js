@@ -6,18 +6,26 @@ module.exports = function(db,app){
         //error status
         let status = [];
 
-        //group name and room name
+        //group name 
         let grpNmeObj =  req.body.group;
         let username = req.body.username;
         let users = req.body.users;
+        let usergroups = req.body.usergroups;
+        
+        //Push to array of users in group
         users.push(username);
 
+        //Push to array of groups in user
+        usergroups.push(grpNmeObj);
+        
         //collection
         const colGroups = db.collection('groups');
+        const colUsers = db.collection('extendedUsers');
         
-    
-        
+        //Add group to user data
+        colUsers.updateOne({username:username}, {$set:{usergroups:usergroups}});
 
+        //Add to groups data
         colGroups.updateOne({group:grpNmeObj}, {$set:{users:users}});
         status.push(1);
         res.send(status);
