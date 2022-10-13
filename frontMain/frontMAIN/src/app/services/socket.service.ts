@@ -39,7 +39,10 @@ export class SocketService {
   }
 
 
+  //Join room/channel
   joinRoom(room: any, username: any){
     this.socket.emit('joinRoom', room, username);
   }
+
+
 }

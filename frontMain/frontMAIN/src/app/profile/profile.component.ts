@@ -52,6 +52,7 @@ export class ProfileComponent implements OnInit {
     let curUser = localStorage.getItem('username');
     let curUserRole = localStorage.getItem('userrole');
 
+    //Super roles
     if(curUserRole == "super"){
 
       this.mongoData.createUser(userobj)
@@ -70,6 +71,7 @@ export class ProfileComponent implements OnInit {
           }
         });
 
+        //Admin role
     }else if(curUserRole == "admin"){
       if(this.userrole == "admin" || this.userrole == "super"){
         alert("Cannot give user super/admin role")
@@ -92,6 +94,7 @@ export class ProfileComponent implements OnInit {
       }
 
 
+      //Cant access
     }else{
       alert("Unauthorized Access");
     }
@@ -107,5 +110,21 @@ export class ProfileComponent implements OnInit {
   logoutFunc(){
     localStorage.clear();
     this.router.navigateByUrl("/");
+  }
+
+  title = 'imageupload';
+  selectedfile:any = null;
+  imagepath="";
+
+  onFileSelected(event:any){
+    this.selectedfile = event.target.files[0];
+  }
+  onUpload(){
+    const fd = new FormData();
+    fd.append('image',this.selectedfile,this.selectedfile.name);
+    this.mongoData.imgupload(fd).subscribe(res=>{
+      this.imagepath = res.data.filename;
+
+    });
   }
 }

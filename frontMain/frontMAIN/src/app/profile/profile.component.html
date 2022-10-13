@@ -13,4 +13,15 @@ role: <br>
 
 <button class="log_but" id="submit"(click)="logoutFunc()">Logout</button>
 
+<h1> File Upload</h1>
+<form>
+  <div class="form-group">
+<input type="file" class="form-control" (change)="onFileSelected($event)" name="uploadfile" id = "uploadfile" />
+
+</div>
+<button class="btn btn-primary" type="button" (click) ="onUpload()">Submit</button>
+</form>
+
+<img src="http://localhost:3000\images\{{imagepath}} "/>
+
 

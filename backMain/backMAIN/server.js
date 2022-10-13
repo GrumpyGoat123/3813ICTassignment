@@ -11,6 +11,12 @@ const client = new MongoClient(url);
 var ObjectID = require('mongodb').ObjectID;
 app.use(bodyParser.json());
 
+//Images
+//const formidable = require('formidable');
+
+//require('./routes/uploads.js')(app,formidable,fs,path);
+
+
 //Conect to db server
 MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},function(err, client) {
     if (err) {return console.log(err)}
@@ -45,6 +51,8 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
 
         //Chat
         require('./router/chat/storeChat')(db, app);
+
+        
 
 });
 

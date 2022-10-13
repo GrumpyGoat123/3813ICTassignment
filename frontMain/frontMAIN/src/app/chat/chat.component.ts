@@ -101,6 +101,7 @@ export class ChatComponent implements OnInit {
         }
 
         else {
+          //Update groups and user data by grabing from mongo
           this.mongoData.getGroups()
             .subscribe((data)=>{
               console.log(data);
@@ -520,6 +521,7 @@ export class ChatComponent implements OnInit {
   messages:string[] = [];
   ioConnection:any;
 
+  //Connect to mongo
   initIoConnection(){
     this.socketService.initSocket();
     this.ioConnection = this.socketService.getMessage()
@@ -529,6 +531,7 @@ export class ChatComponent implements OnInit {
       });
   }
 
+  //Notification when user joins
   joinedNotification(){
     console.log("made it")
     this.socketService.joinNoti()
@@ -540,6 +543,7 @@ export class ChatComponent implements OnInit {
 
   }
 
+  //Send messages socket
   chat(){
     if(this.messagecontent){
       //Check for message to send
@@ -550,6 +554,50 @@ export class ChatComponent implements OnInit {
       console.log("No message");
     }
 
+  }
+
+  //Store messages in mongo
+  updateMessages(){
+    let groupObj = {
+      'group': this.currentGroup,
+      'roomname': this.selectedName,
+      'username': this.username,
+      'newRoom': [],
+      'users': [] = [],
+      'userrooms': this.userObj[0].userrooms,
+      'messages': [] as string []
+    }
+
+    let i = this.groupObj.findIndex((x: { group: string; }) => x.group == groupObj.group);
+
+    console.log(groupObj.roomname)
+    for(let a = 0; a < this.groupObj[i].rooms.length; a ++){
+      if(this.groupObj[i].rooms[a].room == groupObj.roomname){
+        groupObj.users = this.groupObj[i].rooms[a].users;
+        groupObj.messages = this.messages;
+        groupObj.newRoom = this.groupObj[i].rooms;
+        console.log(groupObj);
+        this.mongoData.updateMessages(groupObj)
+        .subscribe((data:any)=>{
+            this.mongoData.getGroups()
+              .subscribe((data)=>{
+                this.groupObj = data;
+
+              });
+        });
+        break;
+      }
+    }
+  }
+
+  //Display messages on client side
+  getMessages(){
+    let i = this.groupObj.findIndex((x: { group: string; }) => x.group == this.currentGroup);
+    for(let a = 0; a < this.groupObj[i].rooms.length; a ++){
+      if(this.groupObj[i].rooms[a].room == this.selectedName){
+        this.messages = this.groupObj[i].rooms[a].messages;
+      }
+    }
   }
 
   //
@@ -619,49 +667,7 @@ export class ChatComponent implements OnInit {
 
   }
 
-  //Store messages in mongo
-  updateMessages(){
-    let groupObj = {
-      'group': this.currentGroup,
-      'roomname': this.selectedName,
-      'username': this.username,
-      'newRoom': [],
-      'users': [] = [],
-      'userrooms': this.userObj[0].userrooms,
-      'messages': [] as string []
-    }
 
-    let i = this.groupObj.findIndex((x: { group: string; }) => x.group == groupObj.group);
-
-    console.log(groupObj.roomname)
-    for(let a = 0; a < this.groupObj[i].rooms.length; a ++){
-      if(this.groupObj[i].rooms[a].room == groupObj.roomname){
-        groupObj.users = this.groupObj[i].rooms[a].users;
-        groupObj.messages = this.messages;
-        groupObj.newRoom = this.groupObj[i].rooms;
-        console.log(groupObj);
-        this.mongoData.updateMessages(groupObj)
-        .subscribe((data:any)=>{
-            this.mongoData.getGroups()
-              .subscribe((data)=>{
-                this.groupObj = data;
-
-              });
-        });
-        break;
-      }
-    }
-  }
-
-  //Display messages on client side
-  getMessages(){
-    let i = this.groupObj.findIndex((x: { group: string; }) => x.group == this.currentGroup);
-    for(let a = 0; a < this.groupObj[i].rooms.length; a ++){
-      if(this.groupObj[i].rooms[a].room == this.selectedName){
-        this.messages = this.groupObj[i].rooms[a].messages;
-      }
-    }
-  }
 
 }
 

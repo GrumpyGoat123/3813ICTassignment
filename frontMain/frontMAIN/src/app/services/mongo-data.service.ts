@@ -8,6 +8,8 @@ import { Userobj } from '../userobj';
 export class MongoDataService {
 
   constructor(private http:HttpClient) { }
+
+  //Profile page
   createUser(userobj:Userobj){
     return this.http.post<any>('http://localhost:3000/crtUser', userobj);
   }
@@ -17,6 +19,10 @@ export class MongoDataService {
     return this.http.post<any>('http://localhost:3000/login', user);
   }
 
+
+  //
+  //Groups and rooms
+  //
   createGroup(groupname:any){
     return this.http.post<any>('http://localhost:3000/crtGrp', groupname);
   }
@@ -32,6 +38,12 @@ export class MongoDataService {
   deleteRoom(roomObj:any){
     return this.http.post<any>('http://localhost:3000/dltRoom', roomObj);
   }
+
+
+
+  //
+  //Users routes
+  //
 
   addUserGroup(groupObj:any){
     return this.http.post<any>('http://localhost:3000/addUserGroup', groupObj);
@@ -50,6 +62,9 @@ export class MongoDataService {
   }
 
 
+  //
+  //Gets routes
+  //
   getGroups(){
     return this.http.get<any>('http://localhost:3000/getGrp');
   }
@@ -58,11 +73,19 @@ export class MongoDataService {
     return this.http.get<any>('http://localhost:3000/getUsers');
   }
 
+
+  //Message routes
   curRoom(curRoom: any){
     return this.http.post<any>('http://localhost:3000/curRoom', curRoom);
   }
 
   updateMessages(room: any){
     return this.http.post<any>('http://localhost:3000/strCht', room);
+  }
+
+
+  //Upload image
+  imgupload(fd:any){
+    return this.http.post<any>('http://localhost:3000/upload', fd)
   }
 }
