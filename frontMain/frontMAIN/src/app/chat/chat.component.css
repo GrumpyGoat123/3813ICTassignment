@@ -230,3 +230,19 @@ border-radius: 10px;
 ::-webkit-scrollbar-thumb:hover {
 background: #5454b6;
 }
+
+.ctr{
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+.item{
+  margin-right:40px;
+}
+
+.button{
+  border: 1px solid black;
+  padding: 2px 5px 2px 5px;
+  cursor: pointer;
+}

@@ -215,3 +215,16 @@ Room Name: <br>
 </div>
 
 
+
+<table>
+	<tr>
+		<th style="width:50%"><b>List groups </b></th>
+    <th></th>
+  </tr>
+  <tr *ngFor="let group of userGroupList; let i = index">
+    <td><b>{{group}}</b> </td>
+    <td><button (click)="showRooms(i, group)">{{joined[i]}}</button></td>
+  </tr>
+</table>
+
+<li *ngFor="let g of userRoomList">{{g}}</li>

@@ -14,6 +14,7 @@ module.exports = function(db,app){
         let users = req.body.users;
         let userrooms = req.body.userrooms;
 
+        
         //Create a new room object
         users.push(username);
         a = {room:roomname, users:users};
@@ -23,16 +24,19 @@ module.exports = function(db,app){
         console.log(i)
         newRoom.splice(i, 1, a);
 
+        //a = {room:rmNameObj, users:[]};
         //Push to array of rooms in user
-        userrooms.push(roomname);
+        let newRoomObj = {groupname:grpNmeObj, rooms:userrooms}
+
+        Object.assign(userrooms, newRoomObj);
 
         //collection
         const colGroups = db.collection('groups');
         const colUsers = db.collection('extendedUsers');
         
         //Add rooom to user data
-        colUsers.updateOne({username:username}, {$set:{userrooms:userrooms}});
-        
+        //colUsers.updateOne({username:username}, {$set:{userrooms:userrooms}});
+
         //Update new room
         colGroups.updateOne({group:grpNmeObj}, {$set:{rooms:newRoom}});
         status.push(1);

@@ -33,7 +33,7 @@ module.exports = function(db,app){
         const colUsers = db.collection('extendedUsers');
         
         //Add rooom to user data
-        colUsers.updateOne({username:username}, {$set:{userrooms:userrooms}});
+        //colUsers.updateOne({username:username}, {$set:{userrooms:userrooms}});
 
         //Update new room
         colGroups.updateOne({group:grpNmeObj}, {$set:{rooms:newRoom}});

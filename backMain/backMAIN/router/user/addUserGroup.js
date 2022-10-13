@@ -17,7 +17,8 @@ module.exports = function(db,app){
 
         //Push to array of groups in user
         usergroups.push(grpNmeObj);
-        
+        console.log(usergroups);
+
         //collection
         const colGroups = db.collection('groups');
         const colUsers = db.collection('extendedUsers');

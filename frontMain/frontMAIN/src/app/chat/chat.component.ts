@@ -26,11 +26,20 @@ export class ChatComponent implements OnInit {
   groupname = "";
   roomname = "";
 
-  groupObj:any;
-  userObj:any;
+  //Data
+  groupObj: any[] = [];
+  userObj: any[] = [];
 
 
-  grouplist = [];
+  //User list
+  userGroupList: any[] = [];
+  userRoomList: any[] = [];
+
+  //Group list variables
+  selectedName: any;
+  selectedType: any;
+  joined: any;
+
   constructor(private router: Router, private httpClient: HttpClient, private socketService:SocketService, private mongoData:MongoDataService) {
     if (!(localStorage.getItem('userlogin')=="true")){
       alert("login please");
@@ -49,12 +58,15 @@ export class ChatComponent implements OnInit {
 
       this.groupObj = data;
 
+
     });
     this.mongoData.getUsers()
     .subscribe((data)=>{
       console.log(data);
 
       this.userObj = data;
+      this.userGroupList = this.userObj[0].usergroups;
+      console.log(this.userGroupList)
 
     });
 
@@ -63,6 +75,7 @@ export class ChatComponent implements OnInit {
     });
 
     this.initIoConnection();
+    this.joined = Array.from({ length: 7}).fill('JOIN');
   }
 
   //
@@ -90,12 +103,20 @@ export class ChatComponent implements OnInit {
         }
 
         else {
-          this.grouplist = data;
           this.mongoData.getGroups()
             .subscribe((data)=>{
               console.log(data);
 
               this.groupObj = data;
+
+          });
+          this.mongoData.getUsers()
+          .subscribe((data)=>{
+            console.log(data);
+
+            this.userObj = data;
+            this.userGroupList = this.userObj[0].usergroups;
+
 
           });
           alert("Created new group");
@@ -131,6 +152,15 @@ export class ChatComponent implements OnInit {
               console.log(data);
 
               this.groupObj = data;
+
+            });
+            this.mongoData.getUsers()
+            .subscribe((data)=>{
+              console.log(data);
+
+              this.userObj = data;
+              this.userGroupList = this.userObj[0].usergroups;
+
 
             });
           alert("Deleted Group");
@@ -501,9 +531,47 @@ export class ChatComponent implements OnInit {
       //Check for message to send
       this.socketService.send(this.messagecontent);
       this.messagecontent = "";
+      console.log(this.userGroupList);
     }else{
       console.log("No message");
     }
 
   }
+
+  //
+  //
+  //Group functions
+  //
+  //
+  //Display rooms when button clicked
+  showRooms(index: any, group: any){
+    //reset rooms list
+    this.userRoomList = [];
+    //Update button
+    this.joined[index] = 'JOINED';
+    //Get button clicked name
+    let a = this.userGroupList[index];
+
+    //loop through data and store rooms
+    for(let i = 0; i<this.groupObj.length; i++){
+      if(a == this.groupObj[i].group){
+        for(let roomsIndex = 0; roomsIndex<this.groupObj[i].rooms.length; roomsIndex++){
+          for(let roomUsrIndex = 0; roomUsrIndex<this.groupObj[i].rooms[roomsIndex].users.length; roomUsrIndex++){
+            if (this.username == this.groupObj[i].rooms[roomsIndex].users[roomUsrIndex]){
+              this.userRoomList.push(this.groupObj[i].rooms[roomsIndex].room);
+            }
+          }
+
+          console.log(this.userRoomList)
+
+        }
+      }
+    }
+  }
+
 }
+
+
+
+
+
