@@ -30,7 +30,16 @@ export class SocketService {
     });
   }
 
-  joinRoom(room: any){
-    this.socket.emit('joinRoom', room);
+  //Doesnt work join notification
+  joinNoti(){
+    return new Observable(observer=>{
+      this.socket.on('joinNoti', (data:any)=> {observer.next(data)
+      });
+    });
+  }
+
+
+  joinRoom(room: any, username: any){
+    this.socket.emit('joinRoom', room, username);
   }
 }

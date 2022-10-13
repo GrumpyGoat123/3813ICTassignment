@@ -48,29 +48,18 @@
           </div>
         </li>
         <li>
-          <div class="d-flex bd-highlight">
-            <div class="img_cont">
-              <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" class="rounded-circle user_img">
-              <span class="online_icon offline"></span>
-            </div>
-            <div class="user_info">
-              <span>jassa Mann</span>
-              <p>Nargis left 30 mins ago</p>
-            </div>
-          </div>
+          <table>
+            <tr>
+              <th style="width:50%"><b>Rooms </b></th>
+              <th></th>
+            </tr>
+            <tr *ngFor="let g of userRoomList; let p = index">
+              <td><b>{{g}}</b> </td>
+              <td><button (click)="joinRoom(p, g)">{{roomJoined[p]}}</button></td>
+            </tr>
+          </table>
         </li>
-        <li>
-          <div class="d-flex bd-highlight">
-            <div class="img_cont">
-              <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" class="rounded-circle user_img">
-              <span class="online_icon offline"></span>
-            </div>
-            <div class="user_info">
-              <span>jassa Mann</span>
-              <p>Rashid left 50 mins ago</p>
-            </div>
-          </div>
-        </li>
+
       </ul>
       </div>
       <div class="card-footer"></div>
@@ -99,10 +88,15 @@
               <li><i class="fas fa-users" id="submit"(click)="dltUserGroupFunc()"></i> Delete User From Group</li>
               <li><i class="fas fa-plus" id="submit"(click)="crtGrpFunc()"></i> Create New Group</li>
               <li><i class="fas fa-ban" id="submit"(click)="dltGrpFunc()"></i>Delete Group</li>
+              <li><i class="fas fa-plus" id="submit"(click)="crtRoomFunc()"></i>Create Room</li>
+              <li><i class="fas fa-ban" id="submit"(click)="dltRoomFunc()"></i>Delete Room</li>
+              <li><i class="fas fa-user-circle" id="submit"(click)="addUserRoomFunc()"></i>Add User Room</li>
+              <li><i class="fas fa-users" id="submit"(click)="dltUserRoomFunc()"></i>Remove User Room</li>
             </ul>
           </div>
         </div>
         <div class="card-body msg_card_body">
+          <li *ngFor="let m of messages">{{m}}</li>
           <div class="d-flex justify-content-start mb-4">
             <div class="img_cont_msg">
               <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" class="rounded-circle user_img_msg">
@@ -112,69 +106,16 @@
               <span class="msg_time">8:40 AM, Today</span>
             </div>
           </div>
-          <div class="d-flex justify-content-end mb-4">
-            <div class="msg_cotainer_send">
-              Hi jassa i am good tnx how about you?
-              <span class="msg_time_send">8:55 AM, Today</span>
-            </div>
-            <div class="img_cont_msg">
-          <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" class="rounded-circle user_img_msg">
-            </div>
-          </div>
-          <div class="d-flex justify-content-start mb-4">
-            <div class="img_cont_msg">
-              <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" class="rounded-circle user_img_msg">
-            </div>
-            <div class="msg_cotainer">
-              I am good too, thank you for your chat template
-              <span class="msg_time">9:00 AM, Today</span>
-            </div>
-          </div>
-          <div class="d-flex justify-content-end mb-4">
-            <div class="msg_cotainer_send">
-              You are welcome
-              <span class="msg_time_send">9:05 AM, Today</span>
-            </div>
-            <div class="img_cont_msg">
-          <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" class="rounded-circle user_img_msg">
-            </div>
-          </div>
-          <div class="d-flex justify-content-start mb-4">
-            <div class="img_cont_msg">
-              <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" class="rounded-circle user_img_msg">
-            </div>
-            <div class="msg_cotainer">
-              I am looking for your next templates
-              <span class="msg_time">9:07 AM, Today</span>
-            </div>
-          </div>
-          <div class="d-flex justify-content-end mb-4">
-            <div class="msg_cotainer_send">
-              Ok, thank you have a good day
-              <span class="msg_time_send">9:10 AM, Today</span>
-            </div>
-            <div class="img_cont_msg">
-        <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" class="rounded-circle user_img_msg">
-            </div>
-          </div>
-          <div class="d-flex justify-content-start mb-4">
-            <div class="img_cont_msg">
-              <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" class="rounded-circle user_img_msg">
-            </div>
-            <div class="msg_cotainer">
-              Bye, see you
-              <span class="msg_time">9:12 AM, Today</span>
-            </div>
-          </div>
+
         </div>
         <div class="card-footer">
           <div class="input-group">
             <div class="input-group-append">
               <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
             </div>
-            <textarea name="" class="form-control type_msg" placeholder="Type your message..."></textarea>
+              <input type="test" [(ngModel)]="messagecontent" name="messagecontent" id="messagecontent" class="form-control type_msg" placeholder="Type your message..." />
             <div class="input-group-append">
-              <span class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
+              <button (click)="chat()" class="input-group-text send_btn"> <i class="fas fa-location-arrow"></i>Send </button>
             </div>
           </div>
         </div>
@@ -192,28 +133,6 @@ Room Name: <br>
 <input type="string" [(ngModel)]="roomname">   <br>
 
 
-<button class="log_but" id="submit"(click)="crtRoomFunc()">Create Room</button>
-
-<button class="log_but" id="submit"(click)="dltRoomFunc()">Delete Room</button>
-
-<button class="log_but" id="submit"(click)="addUserRoomFunc()">Add User Room</button>
-
-<button class="log_but" id="submit"(click)="dltUserRoomFunc()">Remove User Room</button>
-
-<li *ngFor="let m of messages">{{m}}</li>
-
-<div class="container">
-  <form>
-    <div class="form-group">
-      <label for="messagecontent"> New Message</label>
-      <input type="test" [(ngModel)]="messagecontent" name="messagecontent" id="messagecontent" class="form-control" />
-    </div>
-    <div class="form-group">
-      <button (click)="chat()" class="btn btn-primary"> Send </button>
-    </div>
-  </form>
-</div>
-
 
 
 <table>
@@ -227,15 +146,4 @@ Room Name: <br>
   </tr>
 </table>
 
-
-<table>
-	<tr>
-		<th style="width:50%"><b>List Rooms </b></th>
-    <th></th>
-  </tr>
-  <tr *ngFor="let g of userRoomList; let p = index">
-    <td><b>{{g}}</b> </td>
-    <td><button (click)="joinRoom(p, g)">{{roomJoined[p]}}</button></td>
-  </tr>
-</table>
 

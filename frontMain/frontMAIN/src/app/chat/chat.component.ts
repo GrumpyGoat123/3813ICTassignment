@@ -72,6 +72,7 @@ export class ChatComponent implements OnInit {
     });
 
     this.initIoConnection();
+    this.joinedNotification();
     this.groupJoined = Array.from({ length: 10}).fill('JOIN');
   }
 
@@ -412,6 +413,7 @@ export class ChatComponent implements OnInit {
 
                       this.groupObj = data;
 
+
                       });
                   });
                   break;
@@ -527,6 +529,17 @@ export class ChatComponent implements OnInit {
       });
   }
 
+  joinedNotification(){
+    console.log("made it")
+    this.socketService.joinNoti()
+      .subscribe((message:any) => {
+        console.log("made it")
+        //Add new message to message array
+        this.messages.push(message);
+      });
+
+  }
+
   chat(){
     if(this.messagecontent){
       //Check for message to send
@@ -572,8 +585,6 @@ export class ChatComponent implements OnInit {
             }
           }
 
-          console.log(this.userRoomList)
-
         }
 
       }
@@ -601,7 +612,7 @@ export class ChatComponent implements OnInit {
 
     });
 
-    this.socketService.joinRoom(this.userCurRoom);
+    this.socketService.joinRoom(this.userCurRoom, this.username);
 
     //Update chat history
     this.getMessages();
