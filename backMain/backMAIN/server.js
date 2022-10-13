@@ -29,6 +29,7 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         require('./router/user/dltUserGroup')(db, app);
         require('./router/user/addUserRoom')(db, app);
         require('./router/user/dltUserRoom')(db, app);
+        require('./router/user/userCurRoom')(db, app);
 
         //Groups
         require('./router/group/createGroup')(db, app);
@@ -41,7 +42,10 @@ MongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true},funct
         //Get Data
         require('./router/get/getGroups')(db, app);
         require('./router/get/getUsers')(db, app);
-        
+
+        //Chat
+        require('./router/chat/storeChat')(db, app);
+
 });
 
 //Cors

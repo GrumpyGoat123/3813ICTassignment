@@ -12,7 +12,7 @@ module.exports = function(db,app){
         let newRoom = req.body.newRoom;
         let roomUsers = req.body.roomUsers;
         console.log(newRoom);
-        a = {room:rmNameObj, users:[]};
+        a = {room:rmNameObj, users:[], messages:[] = []};
         //Push new room into room array
         newRoom.push(a);
 

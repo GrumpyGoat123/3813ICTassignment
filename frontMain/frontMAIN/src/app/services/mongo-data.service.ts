@@ -57,4 +57,12 @@ export class MongoDataService {
   getUsers(){
     return this.http.get<any>('http://localhost:3000/getUsers');
   }
+
+  curRoom(curRoom: any){
+    return this.http.post<any>('http://localhost:3000/curRoom', curRoom);
+  }
+
+  updateMessages(room: any){
+    return this.http.post<any>('http://localhost:3000/strCht', room);
+  }
 }

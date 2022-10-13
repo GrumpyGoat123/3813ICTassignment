@@ -1,12 +1,12 @@
 module.exports = function(db,app){
-    app.post('/addUserRoom', function(req,res){
+    app.post('/strCht', function(req,res){
         if(!req.body){
             return res.sendStatus(400)
         }
+
         //error status
         let status = [];
 
-        //group name and room name
         let grpNmeObj =  req.body.group;
         let username = req.body.username;
         let roomname = req.body.roomname;
@@ -15,17 +15,13 @@ module.exports = function(db,app){
         let userrooms = req.body.userrooms;
         let messages = req.body.messages;
 
-        
         //Create a new room object
-        users.push(username);
         a = {room:roomname, users:users, messages:messages};
 
         //update rooms
         let i = newRoom.indexOf(roomname);
         console.log(i)
         newRoom.splice(i, 1, a);
-
-        
 
         //collection
         const colGroups = db.collection('groups');

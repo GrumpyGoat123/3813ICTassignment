@@ -34,11 +34,8 @@ export class ChatComponent implements OnInit {
   //User list
   userGroupList: any[] = [];
   userRoomList: any[] = [];
+  userCurRoom: any;
 
-  //Group list variables
-  selectedName: any;
-  selectedType: any;
-  joined: any;
 
   constructor(private router: Router, private httpClient: HttpClient, private socketService:SocketService, private mongoData:MongoDataService) {
     if (!(localStorage.getItem('userlogin')=="true")){
@@ -75,7 +72,7 @@ export class ChatComponent implements OnInit {
     });
 
     this.initIoConnection();
-    this.joined = Array.from({ length: 7}).fill('JOIN');
+    this.groupJoined = Array.from({ length: 10}).fill('JOIN');
   }
 
   //
@@ -180,7 +177,7 @@ export class ChatComponent implements OnInit {
       'roomName': this.roomname,
       'group': this.groupname,
       'newRoom': [],
-      'roomUsers': []
+      'roomUsers': [],
     }
 
 
@@ -372,6 +369,7 @@ export class ChatComponent implements OnInit {
       'newRoom': [],
       'users': [] = [],
       'userrooms': this.userObj[0].userrooms,
+      'messages': [] = []
     }
 
     let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);
@@ -390,6 +388,7 @@ export class ChatComponent implements OnInit {
               //Find room in group
               if(this.groupObj[i].rooms[a].room == groupObj.roomname){
                 groupObj.users = this.groupObj[i].rooms[a].users;
+                groupObj.messages = this.groupObj[i].rooms[a].messages;
                 groupObj.newRoom = this.groupObj[i].rooms;
                 //Check if user exists in room
                 let userCheck = groupObj.users.length;
@@ -443,6 +442,7 @@ export class ChatComponent implements OnInit {
       'newRoom': [],
       'users': [] = [],
       'userrooms': this.userObj[0].userrooms,
+      'messages': []=[]
     }
 
     let check = this.userObj.findIndex((x: { username: string; }) => x.username == groupObj.username);
@@ -461,6 +461,7 @@ export class ChatComponent implements OnInit {
               //Find room in group
               if(this.groupObj[i].rooms[a].room == groupObj.roomname){
                 groupObj.users = this.groupObj[i].rooms[a].users;
+                groupObj.messages = this.groupObj[i].rooms[a].messages;
                 groupObj.newRoom = this.groupObj[i].rooms;
                 //Check if user exists in room
                 let userCheck = groupObj.users.length;
@@ -529,9 +530,9 @@ export class ChatComponent implements OnInit {
   chat(){
     if(this.messagecontent){
       //Check for message to send
-      this.socketService.send(this.messagecontent);
+      this.socketService.send(this.messagecontent, this.userCurRoom);
       this.messagecontent = "";
-      console.log(this.userGroupList);
+      this.updateMessages();
     }else{
       console.log("No message");
     }
@@ -543,14 +544,23 @@ export class ChatComponent implements OnInit {
   //Group functions
   //
   //
+  //Group list variables
+  selectedName: any;
+  groupJoined: any;
+  roomJoined: any;
+  currentGroup: any;
+
   //Display rooms when button clicked
   showRooms(index: any, group: any){
     //reset rooms list
     this.userRoomList = [];
     //Update button
-    this.joined[index] = 'JOINED';
+    this.groupJoined = Array.from({ length: 10}).fill('JOIN');
+    this.groupJoined[index] = 'JOINED';
     //Get button clicked name
     let a = this.userGroupList[index];
+    this.currentGroup = a;
+
 
     //loop through data and store rooms
     for(let i = 0; i<this.groupObj.length; i++){
@@ -565,6 +575,79 @@ export class ChatComponent implements OnInit {
           console.log(this.userRoomList)
 
         }
+
+      }
+    }
+    this.roomJoined = Array.from({ length: 10}).fill('JOIN');
+  }
+
+  //Join a room
+  joinRoom(index: any, room: any){
+    this.roomJoined = Array.from({ length: 10}).fill('JOIN');
+    this.roomJoined[index] = 'JOINED';
+    this.selectedName = room;
+
+    //create unique room identifier
+    this.userCurRoom = this.currentGroup.concat(":"+room);
+    console.log(this.userCurRoom);
+
+
+    let curRoom = {
+      "username": this.username,
+      "currentroom": this.userCurRoom
+    }
+    this.mongoData.curRoom(curRoom)
+    .subscribe((data:any)=>{
+
+    });
+
+    this.socketService.joinRoom(this.userCurRoom);
+
+    //Update chat history
+    this.getMessages();
+
+  }
+
+  //Store messages in mongo
+  updateMessages(){
+    let groupObj = {
+      'group': this.currentGroup,
+      'roomname': this.selectedName,
+      'username': this.username,
+      'newRoom': [],
+      'users': [] = [],
+      'userrooms': this.userObj[0].userrooms,
+      'messages': [] as string []
+    }
+
+    let i = this.groupObj.findIndex((x: { group: string; }) => x.group == groupObj.group);
+
+    console.log(groupObj.roomname)
+    for(let a = 0; a < this.groupObj[i].rooms.length; a ++){
+      if(this.groupObj[i].rooms[a].room == groupObj.roomname){
+        groupObj.users = this.groupObj[i].rooms[a].users;
+        groupObj.messages = this.messages;
+        groupObj.newRoom = this.groupObj[i].rooms;
+        console.log(groupObj);
+        this.mongoData.updateMessages(groupObj)
+        .subscribe((data:any)=>{
+            this.mongoData.getGroups()
+              .subscribe((data)=>{
+                this.groupObj = data;
+
+              });
+        });
+        break;
+      }
+    }
+  }
+
+  //Display messages on client side
+  getMessages(){
+    let i = this.groupObj.findIndex((x: { group: string; }) => x.group == this.currentGroup);
+    for(let a = 0; a < this.groupObj[i].rooms.length; a ++){
+      if(this.groupObj[i].rooms[a].room == this.selectedName){
+        this.messages = this.groupObj[i].rooms[a].messages;
       }
     }
   }

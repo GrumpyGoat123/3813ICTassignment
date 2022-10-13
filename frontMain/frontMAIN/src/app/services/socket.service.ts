@@ -18,8 +18,8 @@ export class SocketService {
   }
 
   //Emit a message to the socket server
-  send(message: string){
-    this.socket.emit('message', message);
+  send(message: string, room: any){
+    this.socket.emit('message', {message, room});
   }
 
   //Listen for "message" events from the socket server
@@ -28,5 +28,9 @@ export class SocketService {
       this.socket.on('message', (data:any)=> {observer.next(data)
       });
     });
+  }
+
+  joinRoom(room: any){
+    this.socket.emit('joinRoom', room);
   }
 }
