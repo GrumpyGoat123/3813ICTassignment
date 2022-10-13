@@ -5,10 +5,10 @@
 The layout of the git repository simply contains the project folder and a README file. Default branch is main. During the development process, commits where done frequently usually after every stable milestone was achieved so that the application could run without any errors with every commit. Examples of a ‘stable milestone’ include things like new features to the application, a new completed route, improved design of a section/page and any major bug fixes/improvements that i potentially made previously.
 
 ## Data structures
-There are three main data structures which were used in the program. Each structure is stored in its own separate JSON file all stored /data on the server side of the application. 
-The first structure is called users, which is just an object with a username and their corresponding password to go with it for every user that has an account. This data will be used for login purposes only. This structure is separated from the rest of the user’s information for security reasons. By having a separate file just for the users file, the risk of accidently revealing sensitive information is minimized as this information will remain untouched unless a user is logging in or creating an account.
-The second structure is called extendedUsers. This structure is used to store information about each user. This information includes userid, username, useremail, userrole. All this information is used to create a certain profile for each user and is where all the user’s data is stored except for the user’s password.
-The third structure is called groups. This structure stores all the information for the groups including the users who are in the groups, the channels/rooms for each group and the users who are in those channels. A group has a name, group users, rooms, room name, and room users.
+There are three main data structures which were used in the program. Each structure is stored in its own separate collection all stored in mongoDb.
+The first structure is called users, which is just an object with a email and their corresponding password to go with it for every user that has an account. This data will be used for login purposes only. This structure is separated from the rest of the user’s information for security reasons. By having a separate file just for the users file, the risk of accidently revealing sensitive information is minimized as this information will remain untouched unless a user is logging in or creating an account.
+The second structure is called extendedUsers. This structure is used to store information about each user. This information includes userid, username, useremail, userrole, usergroups and currentrroom. All this information is used to create a certain profile for each user and is where all the user’s data is stored except for the user’s password.
+The third structure is called groups. This structure stores all the information for the groups including the users who are in the groups, the channels/rooms for each group, the users who are in those channels and the chat messages for those channels. A group has a name, group users, rooms, room name, room users, chat messages.
 
 ## REST API
 ## Login:
@@ -32,7 +32,7 @@ groupname
 ### Return Value: 
 groupObject
 ### Description: 
-This route takes the group name as a parameter and creates a new object with keys of groupname, users[] and rooms[]. This then stores the new group into the groups JSON file and returns it.
+This route takes the group name as a parameter and creates a new object with keys of groupname, users[] and rooms[]. This then stores the new group into the groups db in mongo.
 
 ## Delete Group: 
 Deletes a group from the data.
@@ -43,7 +43,7 @@ groupname
 ### Return Value: 
 groupObject
 ### Description:
-This route takes a group name as a parameter and finds it in the groups data structure. Once found, it deletes the it from the file and returns it.
+This route takes a group name as a parameter and finds it in the groups data structure. Once found, it deletes the it from mongo.
 
 ## Create Room: 
 Creates a room and stores it in groups
@@ -54,7 +54,7 @@ groupname, roomname
 ### Return value: 
 room, users
 ### Description: 
-This route takes a group name and a room name as a parameter and stores into the groups data structure. It first loops through to find the correct group and then pushes into the rooms key with a new room object (roomName, users[]). 
+This route takes a group name and a room name as a parameter and stores into the groups data structure. It first loops through to find the correct group and then pushes into the rooms key with a new room object (roomName, users[], messages[]). 
 
 ## Delete room: 
 Deletes room from the data
@@ -65,7 +65,7 @@ groupname, roomname
 ### Return value: 
 room, users
 ### Description: 
-This route takes a group name and a room name and deletes the room from the data and returns the existing rooms. It first loops through the groups to find the correct group and then loops through the rooms within that group to find the correct room. Once found it deletes it.
+This route takes a group name and a room name and deletes the room from the data and returns the existing rooms. It first loops through the groups to find the correct group and then loops through the rooms within that group to find the correct room. Once found, it deletes it.
 
 ## Add user to group: 
 Adds a user to the group data
@@ -122,12 +122,56 @@ users
 ### Description: 
 This route takes the users information as a parameter and creates a new user or updates information on an existing user. This will depend on if the user who is logged in as the role/access to do this. This route checks if the username exists and if it does not it will store a new user into the user’s data structure with the new information given.
 
+## Get groups: 
+Gets the group data collection and returns it
+### Route: 
+/getGrp
+### Parameters: 
+null
+### Return value: 
+groupObj
+### Description: 
+This route return the group data collection and stores it into a variable to be used later
+
+## Get users: 
+Gets the user data collection and returns it
+### Route: 
+/getUser
+### Parameters: 
+null
+### Return value: 
+userObj
+### Description: 
+This route return the user data collection and stores it into a variable to be used later
+
+## Current room: 
+Stores the current room into users data collection
+### Route: 
+/curRoom
+### Parameters: 
+curRoom
+### Return value: 
+status
+### Description: 
+This route stores the current room into the users data collection. It does this after a user has joined a room
+
+## Update messages: 
+Stores the messages into data
+### Route: 
+/strCht
+### Parameters: 
+messages room
+### Return value: 
+grpObj
+### Description: 
+This route stores the messages from a single room into groups data collection. It stores it specifically in the exact rooms array and is called everytime a message is sent
+
 Each route has specific error catching parameters within them that check if names exist and what happens if things go wrong. All return different things and alert statement is called if anything goes wrong during the process of these actions.
 
 ## Architecture:
 The front end of the application is split of into four components: Home, login, chat and profile.
 ### Home: 
-The home page is just a start of page displaying how to use the app and some background. This is just a simple start of page
+The home page is just a start of page displaying how to use the app and some background. This is just a simple start of page although the implementation of this was not finished so it is a blank page
 
 ### Login: 
 This page is used for the user to login into the app. It asks for a username and password and has a submit button. Once entered and the credentials are correct it will send the user into the chat page.
@@ -137,3 +181,6 @@ This is the main space of the program. This is where the users can chat with eac
 
 ### Profile: 
 This is the final page and is used for editing your profile information. This page can be used to change your own profile and/or edit other users profile information and creating new users. This page is mainly used for super admins and group admins. Users can also logout from this page.
+
+### Services:
+Two services where used, one for mongo and one for sockets. These were used and called upon by chat compnent whenever contact from the client side wanted with the server side for mongo data. The other service was for sockets and was used for the server side contact with messages
